@@ -73,7 +73,7 @@ destination_folder = "temp/"
 
 
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[251:500]
+files = sorted(files, key=extract_number)[265:500]
 is_first = True
 for filename in files:
     source_path = os.path.join(source_folder, filename)
