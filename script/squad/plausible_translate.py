@@ -8,31 +8,31 @@ import pyperclip
 
 
 def upload_file(is_first, filename):
-    pyautogui.moveTo(101, -515, duration=0.5)
+    pyautogui.moveTo(460, 880, duration=0.5)
     if is_first:
         pyautogui.click()
     pyautogui.click()
-    time.sleep(0.5)
+    time.sleep(10)
 
-    pyautogui.moveTo(175, -570, duration=0.5)
+    pyautogui.moveTo(500, 840, duration=0.5)
     pyautogui.click()
-    time.sleep(0.5)
+    time.sleep(10)
 
-    pyautogui.moveTo(550, -1205, duration=0.5)
+    pyautogui.moveTo(1000, 320, duration=0.5)
     pyautogui.click()
-    time.sleep(0.5)
+    time.sleep(10)
 
-    pyautogui.moveTo(1108, -610, duration=0.5)
+    pyautogui.moveTo(1120, 710, duration=0.5)
     pyautogui.click()
     time.sleep(60)
 
-    pyautogui.moveTo(800, -510, duration=0.5)
+    pyautogui.moveTo(1030, 890, duration=0.5)
     pyautogui.click()
-    pyautogui.moveTo(850, -510, duration=0.5)
-    time.sleep(120)
+    pyautogui.moveTo(1100, 890, duration=0.5)
+    time.sleep(240)
 
     pyperclip.copy(f"Error: {filename}\n")
-    pyautogui.moveTo(712, -1025, duration=0.5)
+    pyautogui.moveTo(950, 417, duration=0.5)
     pyautogui.click()
     pyautogui.click()
     time.sleep(30)
@@ -73,7 +73,7 @@ destination_folder = "temp/"
 
 
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[172:500]
+files = sorted(files, key=extract_number)[251:500]
 is_first = True
 for filename in files:
     source_path = os.path.join(source_folder, filename)
