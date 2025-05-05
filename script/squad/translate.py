@@ -8,12 +8,12 @@ import pyperclip
 
 def copy(y):
     pyperclip.copy(f"Error: {filename}\n")
-    pyautogui.moveTo(1230, y, duration=0.5)
+    pyautogui.moveTo(1275, y, duration=0.5)
     pyautogui.click()
     pyautogui.click()
 
 
-def upload_file(is_first, filename):
+def upload_file(is_first):
     pyautogui.moveTo(625, 850, duration=0.5)
     if is_first:
         pyautogui.click()
@@ -38,8 +38,27 @@ def upload_file(is_first, filename):
     time.sleep(60)
 
 
+def fill_file(is_first, filename):
+    pyautogui.moveTo(635, 810, duration=0.5)
+    if is_first:
+        pyautogui.click()
+    pyautogui.click()
+
+    dest_path = os.path.join(destination_folder, filename)
+    with open(dest_path, "r", encoding="utf-8") as file:
+        content = file.read()
+        data = f'"""\n{content}\n"""\nFor {filename}, I want all 10 rows in json and you must have to follow the prompt'
+        pyperclip.copy(data)
+        pyautogui.hotkey("command", "v")
+
+    pyautogui.moveTo(1320, 850, duration=0.5)
+    pyautogui.click()
+    pyautogui.moveTo(1400, 850, duration=0.5)
+    time.sleep(90)
+
+
 def append_data(filename):
-    y_cors = [363, 373, 383, 393, 403, 413, 423, 433, 453, 463, 473]
+    y_cors = [313,323,333,343,353,363, 373, 383, 393, 403, 413, 423, 433, 453, 463, 473]
     clipboard_data = ""
     num_rows = 0
 
@@ -66,7 +85,7 @@ def delete_temp_files():
             print(f"Deleted: {file_path}")
 
 
-def copy_file():
+def copy_file(filename):
     if os.path.isfile(source_path):
         dest_path = os.path.join(destination_folder, filename)
         shutil.copy2(source_path, dest_path)
@@ -83,14 +102,15 @@ destination_folder = "temp/"
 
 
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[1973:]
+files = sorted(files, key=extract_number)[2194:]
 is_first = True
 for filename in files:
     source_path = os.path.join(source_folder, filename)
 
     delete_temp_files()
-    copy_file()
-    upload_file(is_first, filename)
+    copy_file(filename)
+    #upload_file(is_first, filename)
+    fill_file(is_first, filename)
     append_data(filename)
 
     pyautogui.moveTo(900, 850, duration=0.5)
