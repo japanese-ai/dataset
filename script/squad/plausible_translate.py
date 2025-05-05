@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import shutil
@@ -48,7 +49,7 @@ def fill_file(is_first, filename):
     dest_path = os.path.join(destination_folder, filename)
     with open(dest_path, "r", encoding="utf-8") as file:
         content = file.read()
-        data = f'"""\n{content}\n"""\nI want all 10 rows in json for {filename}'
+        data = f'"""\n{content}\n"""\nFor {filename}, I want all 10 rows in json and you must follow the prompt'
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
@@ -58,10 +59,23 @@ def fill_file(is_first, filename):
     time.sleep(90)
 
 
+def is_jsonl(lines):
+    for i, line in enumerate(lines, 1):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            json.loads(line)
+        except json.JSONDecodeError:
+            return False
+    return True
+
+
 def append_data(filename):
     y_cors = [337, 347, 357, 367, 377, 387, 397, 407, 417, 427, 437, 447, 457, 467, 477]
     clipboard_data = ""
     num_rows = 0
+    lines = []
     for y_cor in y_cors:
         copy(y_cor)
         clipboard_data = pyperclip.paste()
@@ -71,7 +85,7 @@ def append_data(filename):
         if num_rows == 10:
             break
 
-    if num_rows != 10:
+    if num_rows != 10 or is_jsonl(lines) is False:
         clipboard_data = f"Error: {filename}, {num_rows}lines\n"
     with open("data/squad/plausible_translated.jsonl", "a", encoding="utf-8") as f:
         f.write(clipboard_data)
@@ -102,7 +116,7 @@ destination_folder = "temp/"
 
 
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[1302:]
+files = sorted(files, key=extract_number)[1514:]
 is_first = True
 for filename in files:
     source_path = os.path.join(source_folder, filename)
