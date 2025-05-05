@@ -6,44 +6,54 @@ import time
 import pyautogui
 import pyperclip
 
+def copy(y):
+    pyperclip.copy(f"Error: {filename}\n")
+    pyautogui.moveTo(1230, y, duration=0.5)
+    pyautogui.click()
+    pyautogui.click()
+
 
 def upload_file(is_first, filename):
-    pyautogui.moveTo(101, -515, duration=0.5)
+    pyautogui.moveTo(625, 850, duration=0.5)
     if is_first:
         pyautogui.click()
     pyautogui.click()
-    time.sleep(0.5)
+    time.sleep(2)
 
-    pyautogui.moveTo(175, -570, duration=0.5)
+    pyautogui.moveTo(700, 800, duration=0.5)
     pyautogui.click()
-    time.sleep(0.5)
+    time.sleep(2)
 
-    pyautogui.moveTo(550, -1205, duration=0.5)
+    pyautogui.moveTo(650, 305, duration=0.5)
     pyautogui.click()
-    time.sleep(0.5)
+    time.sleep(2)
 
-    pyautogui.moveTo(1108, -610, duration=0.5)
+    pyautogui.moveTo(1210, 680, duration=0.5)
     pyautogui.click()
+    time.sleep(5)
+
+    pyautogui.moveTo(1320, 850, duration=0.5)
+    pyautogui.click()
+    pyautogui.moveTo(1400, 850, duration=0.5)
     time.sleep(60)
-
-    pyautogui.moveTo(800, -510, duration=0.5)
-    pyautogui.click()
-    pyautogui.moveTo(850, -510, duration=0.5)
-    time.sleep(120)
-
-    pyperclip.copy(f"Error: {filename}\n")
-    pyautogui.moveTo(712, -1025, duration=0.5)
-    pyautogui.click()
-    pyautogui.click()
-    time.sleep(30)
 
 
 def append_data(filename):
-    clipboard_data = pyperclip.paste()
-    lines = clipboard_data.strip().splitlines()
-    num_rows = len(lines)
+    y_cors = [363, 373, 383, 393, 403, 413, 423, 433, 453, 463, 473]
+    clipboard_data = ""
+    num_rows = 0
+
+    for y_cor in y_cors:
+        copy(y_cor)
+        clipboard_data = pyperclip.paste()
+        lines = clipboard_data.strip().splitlines()
+        num_rows = len(lines)
+        if num_rows == 10:
+            break
+
     if num_rows != 10:
         clipboard_data = f"Error: {filename}, {num_rows}lines\n"
+
     with open("data/squad/translated.jsonl", "a", encoding="utf-8") as f:
         f.write(clipboard_data)
 
@@ -73,7 +83,7 @@ destination_folder = "temp/"
 
 
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[172:500]
+files = sorted(files, key=extract_number)[1973:]
 is_first = True
 for filename in files:
     source_path = os.path.join(source_folder, filename)
@@ -82,5 +92,8 @@ for filename in files:
     copy_file()
     upload_file(is_first, filename)
     append_data(filename)
+
+    pyautogui.moveTo(900, 850, duration=0.5)
+    pyautogui.click()
 
     is_first = False
