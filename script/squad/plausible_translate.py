@@ -52,7 +52,7 @@ def fill_file(is_first, filename):
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
-    pyautogui.moveTo(1030, 890, duration=0.5)
+    pyautogui.moveTo(1035, 890, duration=0.5)
     pyautogui.click()
     pyautogui.moveTo(1100, 890, duration=0.5)
     time.sleep(90)
@@ -102,7 +102,7 @@ destination_folder = "temp/"
 
 
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[1296:]
+files = sorted(files, key=extract_number)[1298:]
 is_first = True
 for filename in files:
     source_path = os.path.join(source_folder, filename)
