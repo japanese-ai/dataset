@@ -48,13 +48,13 @@ def fill_file(is_first, filename):
     dest_path = os.path.join(destination_folder, filename)
     with open(dest_path, "r", encoding="utf-8") as file:
         content = file.read()
-        data = f'"""\n{content}\n"""\nI want all 10 rows in json for {filename}'
+        data = f'"""\n{content}\n"""\nI want all 10 rows in json for {filename}, not in canvas'
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
-    pyautogui.moveTo(1035, 890, duration=0.5)
+    pyautogui.moveTo(1040, 880, duration=0.5)
     pyautogui.click()
-    pyautogui.moveTo(1100, 890, duration=0.5)
+    pyautogui.moveTo(1100, 880, duration=0.5)
     time.sleep(90)
 
 
@@ -102,7 +102,7 @@ destination_folder = "temp/"
 
 
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[1298:]
+files = sorted(files, key=extract_number)[1301:]
 is_first = True
 for filename in files:
     source_path = os.path.join(source_folder, filename)
