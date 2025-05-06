@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import shutil
@@ -8,7 +9,7 @@ import pyperclip
 
 def copy(y):
     pyperclip.copy(f"Error: {filename}\n")
-    pyautogui.moveTo(1275, y, duration=0.5)
+    pyautogui.moveTo(1230, y, duration=0.5)
     pyautogui.click()
     pyautogui.click()
 
@@ -44,21 +45,36 @@ def fill_file(is_first, filename):
         pyautogui.click()
     pyautogui.click()
 
+    pyautogui.hotkey("command", "a")
+    pyautogui.press("backspace")
+
     dest_path = os.path.join(destination_folder, filename)
     with open(dest_path, "r", encoding="utf-8") as file:
         content = file.read()
-        data = f'"""\n{content}\n"""\nFor {filename}, I want all 10 rows in json and you must have to follow the prompt'
+        data = f'"""\n{content}\n"""\nFor {filename}, I want all 10 rows in jsonl format and you must have to follow the prompt'
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
     pyautogui.moveTo(1320, 850, duration=0.5)
     pyautogui.click()
     pyautogui.moveTo(1400, 850, duration=0.5)
-    time.sleep(90)
+    time.sleep(180)
+
+
+def is_jsonl(lines):
+    for i, line in enumerate(lines, 1):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            json.loads(line)
+        except json.JSONDecodeError:
+            return False
+    return True
 
 
 def append_data(filename):
-    y_cors = [313,323,333,343,353,363, 373, 383, 393, 403, 413, 423, 433, 453, 463, 473]
+    y_cors = [263, 273, 283, 293, 303, 313,323,333,343,353,363, 373, 383, 393, 403, 413, 423, 433, 453, 463, 473]
     clipboard_data = ""
     num_rows = 0
 
@@ -70,7 +86,7 @@ def append_data(filename):
         if num_rows == 10:
             break
 
-    if num_rows != 10:
+    if num_rows != 10 or is_jsonl(lines) is False:
         clipboard_data = f"Error: {filename}, {num_rows}lines\n"
 
     with open("data/squad/translated.jsonl", "a", encoding="utf-8") as f:
@@ -101,8 +117,11 @@ source_folder = "data/squad/processed/answers_chunks"
 destination_folder = "temp/"
 
 
+last = 4341
+start = 2471
+end  = start + 100
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[2194:]
+files = sorted(files, key=extract_number)[start:end]
 is_first = True
 for filename in files:
     source_path = os.path.join(source_folder, filename)
