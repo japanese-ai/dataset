@@ -78,7 +78,7 @@ def fill_file(filename):
     dest_path = os.path.join(destination_folder, filename)
     with open(dest_path, "r", encoding="utf-8") as file:
         content = file.read()
-        data = f'"""\n{content}\n"""\nFor {filename}, I want all 10 rows in jsonl format and you must follow the prompt instructions'
+        data = f'"""\n{content}\n"""\nFor {filename}, I want all 10 rows in jsonl format and follow the prompt instructions'
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
@@ -170,7 +170,7 @@ destination_folder = "temp/"
 
 
 last = 2174
-start = 1670
+start = 1675
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:last]
 is_first = True
@@ -193,6 +193,6 @@ for filename in files:
     is_first = False
 
     count += 1
-    if count >= 2:
+    if count >= 30:
         count = 0
-        time.sleep(30)
+        time.sleep(300)
