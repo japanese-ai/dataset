@@ -209,9 +209,9 @@ destination_folder = "temp/"
 
 
 last = 2174
-start = 2066
+start = 2174
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[start:2115]
+files = sorted(files, key=extract_number)[start:]
 is_first = True
 count = 1
 for filename in files:
@@ -237,6 +237,7 @@ for filename in files:
     is_first = False
 
     count += 1
-    if count >= 60:
+    if count >= 100:
         count = 0
-        time.sleep(300)
+        break
+        # time.sleep(300)
