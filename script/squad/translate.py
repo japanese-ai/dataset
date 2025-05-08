@@ -7,6 +7,22 @@ import time
 import pyautogui
 import pyperclip
 
+prompt = """
+英語の質問、参考情報、回答を日本語に翻訳し、次の厳密なフォーマットで1行のJSON（JSONL形式）として出力するGPTです：
+
+1. 質問：自然で丁寧な日本語に翻訳。
+2. 参考情報：英語の参考文を忠実に日本語へ翻訳。
+3. 答え：
+   - Chain-of-Thought（ステップバイステップ）形式で説明。
+   - HTMLタグ（<p>、<ul>、<li>、<strong>など）を使用。
+   - 各ステップに絵文字（例: 😊 ✅ 📄 🎤など）を含める。
+   - 重要語句は<strong>タグ</strong>で強調。
+   - 最後にまとめ文を<p>タグで記述し、✅マークを付ける。
+   - リストが多い場合は3つごとに段落を分け、<br>などで読みやすく整形。
+
+不足があれば文脈から補完し、忠実かつ丁寧な日本語で自然な整形を行う。
+"""
+
 def copy(y):
     pyperclip.copy(f"Error: {filename}\n")
     pyautogui.moveTo(1230, y, duration=0.5)
@@ -40,30 +56,30 @@ def upload_file(is_first):
 
 
 def fill_first(is_first):
-    pyautogui.moveTo(180, 150, duration=0.5)
+    pyautogui.moveTo(180, 220, duration=0.5)
     if is_first:
         pyautogui.click()
     pyautogui.click()
     time.sleep(10)
 
-    pyautogui.moveTo(180, 260, duration=0.5)
+    pyautogui.moveTo(180, 360, duration=0.5)
     pyautogui.click()
     time.sleep(10)
 
-    pyautogui.moveTo(650, 610, duration=0.5)
+    pyautogui.moveTo(650, 640, duration=0.5)
     pyautogui.click()
 
     pyautogui.hotkey("command", "a")
     pyautogui.press("backspace")
 
     pyperclip.copy(
-        "You must follow the prompt instructions and need to provide in jsonl format for the following questions"
+        f'"""{prompt}"""\nYou must follow the prompt instructions and need to provide in jsonl format for the following questions'
     )
     pyautogui.hotkey("command", "v")
 
-    pyautogui.moveTo(1320, 660, duration=0.5)
+    pyautogui.moveTo(1320, 760, duration=0.5)
     pyautogui.click()
-    pyautogui.moveTo(1320, 700, duration=0.5)
+    pyautogui.moveTo(1320, 760, duration=0.5)
     time.sleep(30)
 
 
@@ -77,7 +93,7 @@ def fill_file(filename):
     dest_path = os.path.join(destination_folder, filename)
     with open(dest_path, "r", encoding="utf-8") as file:
         content = file.read()
-        data = f'"""\n{content}\n"""\nFor {filename}, I want all 10 rows in jsonl format and you must follow the prompt instructions'
+        data = f'"""\n{content}\n"""\nFor {filename}, I want all 10 rows in jsonl format'
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
@@ -158,11 +174,12 @@ destination_folder = "temp/"
 
 
 last = 4341
-start = 2473
+start = 2777
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:last]
+
 is_first = True
-count = 0
+count = 1
 for filename in files:
     source_path = os.path.join(source_folder, filename)
 
@@ -179,6 +196,6 @@ for filename in files:
 
     is_first = False
     count += 1
-    if count >= 30:
+    if count >= 60:
         count = 0
         time.sleep(300)
