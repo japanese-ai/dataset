@@ -66,7 +66,7 @@ def fill_first(is_first):
     pyautogui.click()
     time.sleep(10)
 
-    pyautogui.moveTo(650, 640, duration=0.5)
+    pyautogui.moveTo(650, 810, duration=0.5)
     pyautogui.click()
 
     pyautogui.hotkey("command", "a")
@@ -77,13 +77,13 @@ def fill_first(is_first):
     )
     pyautogui.hotkey("command", "v")
 
-    pyautogui.moveTo(1320, 760, duration=0.5)
+    pyautogui.moveTo(1320, 850, duration=0.5)
     pyautogui.click()
-    pyautogui.moveTo(1320, 760, duration=0.5)
+    pyautogui.moveTo(1380, 850, duration=0.5)
     time.sleep(30)
 
 
-def fill_file(filename):
+def fill_file(filename, index=0):
     pyautogui.moveTo(635, 810, duration=0.5)
     pyautogui.click()
 
@@ -92,8 +92,15 @@ def fill_file(filename):
 
     dest_path = os.path.join(destination_folder, filename)
     with open(dest_path, "r", encoding="utf-8") as file:
-        content = file.read()
-        data = f'"""\n{content}\n"""\nFor {filename}, I want all 10 rows in jsonl format'
+        content = json.load(file)
+        num_rows = 10
+        if index == 1:
+            content = content[:5]
+            num_rows = 5
+        elif index == 2:
+            content = content[5:]
+            num_rows = 5
+        data = f'"""\n{content}\n"""\nFor {filename}_{index}, I want all {num_rows} rows in jsonl format'
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
@@ -125,11 +132,12 @@ def is_jsonl(lines):
     return True
 
 
-def append_data(filename):
+def append_data(filename, retry, index=0):
     y_cors = [263, 273, 283, 293, 303, 313,323,333,343,353,363, 373, 383, 393, 403, 413, 423, 433, 453, 463, 473]
     clipboard_data = ""
     num_rows = 0
-
+    lines = []
+    check_rows = 10 if index == 0 else 5
     for y_cor in y_cors:
         copy(y_cor)
         clipboard_data = pyperclip.paste()
@@ -139,14 +147,19 @@ def append_data(filename):
         clipboard_data += "\n"
         lines = clipboard_data.strip().splitlines()
         num_rows = len(lines)
-        if num_rows == 10:
+
+        if num_rows == check_rows:
             break
 
-    if num_rows != 10 or is_jsonl(lines) is False:
-        clipboard_data = f"Error: {filename}, {num_rows}lines\n"
+    if num_rows != check_rows or is_jsonl(lines) is False:
+        clipboard_data = f"Error: {filename}, {num_rows}lines (index: {index})\n"
+        if retry:
+            return False
 
     with open("data/squad/translated.jsonl", "a", encoding="utf-8") as f:
         f.write(clipboard_data)
+
+    return True
 
 
 def delete_temp_files():
@@ -174,7 +187,7 @@ destination_folder = "temp/"
 
 
 last = 4341
-start = 2777
+start = 2934
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:last]
 
@@ -185,17 +198,24 @@ for filename in files:
 
     delete_temp_files()
     copy_file(filename)
-    #upload_file(is_first, filename)
+    #upload_file(is_first, filename)v
     if count == 0:
         fill_first(is_first)
+
     fill_file(filename)
-    append_data(filename)
+    is_appended = append_data(filename, True)
+
+    if is_appended is False:
+        for index in [1, 2]:
+            fill_file(filename, index)
+            append_data(filename, False, index)
 
     pyautogui.moveTo(900, 850, duration=0.5)
     pyautogui.click()
 
     is_first = False
     count += 1
-    if count >= 60:
+    if count >= 100:
         count = 0
-        time.sleep(300)
+        # time.sleep(300)
+        break
