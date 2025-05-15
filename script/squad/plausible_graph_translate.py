@@ -76,30 +76,40 @@ def upload_file(is_first):
 
 
 def fill_first(is_first):
-    pyautogui.moveTo(180, 230, duration=0.5)
+    # pyautogui.moveTo(180, 230, duration=0.5)
+    # if is_first:
+    #     pyautogui.click()
+    # pyautogui.click()
+    # time.sleep(10)
+
+    # pyautogui.moveTo(180, 370, duration=0.5)
+    # pyautogui.click()
+    # time.sleep(10)
+
+    pyautogui.moveTo(180, 170, duration=0.5)
     if is_first:
         pyautogui.click()
     pyautogui.click()
     time.sleep(10)
 
-    pyautogui.moveTo(180, 340, duration=0.5)
+    pyautogui.moveTo(180, 270, duration=0.5)
     pyautogui.click()
     time.sleep(10)
 
-    pyautogui.moveTo(470, 840, duration=0.5)
-    pyautogui.click()
+    # pyautogui.moveTo(470, 840, duration=0.5)
+    # pyautogui.click()
 
-    pyautogui.hotkey("command", "a")
-    pyautogui.press("backspace")
+    # pyautogui.hotkey("command", "a")
+    # pyautogui.press("backspace")
 
-    pyperclip.copy(
-        f'"""{prompt}"""\nYou must follow the prompt instructions and need to provide in jsonl format for the following questions'
-    )
-    pyautogui.hotkey("command", "v")
+    # pyperclip.copy(
+    #     f'"""{prompt}"""\nYou must follow the prompt instructions and need to provide in jsonl format for the following questions'
+    # )
+    # pyautogui.hotkey("command", "v")
 
-    pyautogui.moveTo(1040, 880, duration=0.5)
-    pyautogui.click()
-    pyautogui.moveTo(1100, 880, duration=0.5)
+    # pyautogui.moveTo(1040, 880, duration=0.5)
+    # pyautogui.click()
+    # pyautogui.moveTo(1100, 880, duration=0.5)
     time.sleep(30)
 
 
@@ -118,14 +128,14 @@ def fill_file(filename, index=0):
             content = content[:5]
         elif index == 2:
             content = content[5:]
-        data = f'"""\n{content}\n"""\nこのデータセット({filename}_{index})を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報を日本語に翻訳し、グラフ情報を必ず参照して、HTMLを含むCoT形式の回答を生成してください。グラフ情報は必ず含め、誤答候補も出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。'
+        data = f'"""\n{content}\n"""\nこのデータセット({filename}_{index})を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、グラフ情報を必ず参照して、HTMLと絵文字を含むCoT形式の回答を生成してください。グラフ情報は必ず含め、誤答候補も出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。\n※回答にCoT形式をもっと入れて欲しい\n※答えにもっと絵文字を入れて欲しい\n※ノードの「name」を日本語に翻訳して欲しい'
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
     pyautogui.moveTo(1040, 880, duration=0.5)
     pyautogui.click()
-    pyautogui.moveTo(1100, 880, duration=0.5)
-    time.sleep(180)
+    pyautogui.moveTo(1100, 680, duration=0.5)
+    time.sleep(120)
 
 
 def is_valid_graph_info(graph_info):
@@ -171,9 +181,10 @@ def is_valid_format(obj):
     if not all(isinstance(obj[key], str) for key in required_keys):
         return False
 
-    if "グラフ情報" in obj:
-        if not is_valid_graph_info(obj["グラフ情報"]):
-            return False
+    if "グラフ情報" not in obj:
+        return False
+    if not is_valid_graph_info(obj["グラフ情報"]):
+        return False
 
     return True
 
@@ -194,7 +205,20 @@ def is_jsonl(lines):
 
 
 def append_data(filename, retry, index=0):
+    pyautogui.scroll(-100)
+
     y_cors = [
+        177,
+        187,
+        197,
+        207,
+        217,
+        227,
+        237,
+        247,
+        257,
+        267,
+        277,
         287,
         297,
         307,
@@ -215,6 +239,14 @@ def append_data(filename, retry, index=0):
         457,
         467,
         477,
+        487,
+        497,
+        507,
+        517,
+        527,
+        537,
+        547,
+        557,
     ]
     clipboard_data = ""
     num_rows = 0
@@ -223,25 +255,41 @@ def append_data(filename, retry, index=0):
     for y_cor in y_cors:
         copy(y_cor)
         clipboard_data = pyperclip.paste()
-        clipboard_data = "\n".join(
-            [line for line in clipboard_data.split("\n") if line.strip()]
-        )
+        clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
+        clipboard_data = [
+            line
+            for line in clipboard_data.strip().splitlines()
+            if line not in ["", "}", ",", "},"]
+        ]
+        clipboard_data = [
+            (
+                line.strip() + ("}" if line.strip().endswith("}]}") else "")
+                if not line.endswith("}]}}")
+                else line
+            )
+            for line in clipboard_data
+        ]
+        clipboard_data = [(line.replace("}]}},", "}]}}")) for line in clipboard_data]
+        clipboard_data = "\n".join(clipboard_data)
         clipboard_data += "\n"
+
         lines = clipboard_data.strip().splitlines()
         num_rows = len(lines)
 
         if num_rows == check_rows:
             break
 
+    is_appended = True
     if num_rows != check_rows or is_jsonl(lines) is False:
         clipboard_data = f"Error: {filename}, {num_rows}lines (index: {index})\n"
+        is_appended = False
         if retry:
             return False
 
     with open("data/squad/plausible_translated.jsonl", "a", encoding="utf-8") as f:
         f.write(clipboard_data)
 
-    return True
+    return is_appended
 
 
 def delete_temp_files():
@@ -269,11 +317,12 @@ destination_folder = "temp/"
 
 
 last = 2174
-start = 2175
+start = 3152
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:]
 is_first = True
-count = 1
+count = 0
+error_count = 0
 for filename in files:
     source_path = os.path.join(source_folder, filename)
 
@@ -290,7 +339,11 @@ for filename in files:
     if is_appended is False:
         for index in [1, 2]:
             fill_file(filename, index)
-            append_data(filename, False, index)
+            is_appended = append_data(filename, False, index)
+            if is_appended is True:
+                error_count = 0
+            else:
+                error_count += 1
 
     pyautogui.moveTo(660, 890, duration=0.5)
     pyautogui.click()
@@ -298,7 +351,9 @@ for filename in files:
     is_first = False
 
     count += 1
-    if count >= 100:
+    if count >= 30:
         count = 0
+        time.sleep(300)
+
+    if error_count >= 5:
         break
-        # time.sleep(300)
