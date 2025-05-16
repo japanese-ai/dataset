@@ -56,30 +56,40 @@ def upload_file(is_first):
 
 
 def fill_first(is_first):
-    pyautogui.moveTo(180, 220, duration=0.5)
+    # pyautogui.moveTo(180, 220, duration=0.5)
+    # if is_first:
+    #     pyautogui.click()
+    # pyautogui.click()
+    # time.sleep(10)
+
+    # pyautogui.moveTo(180, 360, duration=0.5)
+    # pyautogui.click()
+    # time.sleep(10)
+
+    pyautogui.moveTo(180, 160, duration=0.5)
     if is_first:
         pyautogui.click()
     pyautogui.click()
     time.sleep(10)
 
-    pyautogui.moveTo(180, 360, duration=0.5)
+    pyautogui.moveTo(180, 310, duration=0.5)
     pyautogui.click()
     time.sleep(10)
 
-    pyautogui.moveTo(650, 810, duration=0.5)
-    pyautogui.click()
+    # pyautogui.moveTo(650, 810, duration=0.5)
+    # pyautogui.click()
 
-    pyautogui.hotkey("command", "a")
-    pyautogui.press("backspace")
+    # pyautogui.hotkey("command", "a")
+    # pyautogui.press("backspace")
 
-    pyperclip.copy(
-        f'"""{prompt}"""\nYou must follow the prompt instructions and need to provide in jsonl format for the following questions'
-    )
-    pyautogui.hotkey("command", "v")
+    # pyperclip.copy(
+    #     f'"""{prompt}"""\nYou must follow the prompt instructions and need to provide in jsonl format for the following questions'
+    # )
+    # pyautogui.hotkey("command", "v")
 
-    pyautogui.moveTo(1320, 850, duration=0.5)
-    pyautogui.click()
-    pyautogui.moveTo(1380, 850, duration=0.5)
+    # pyautogui.moveTo(1320, 850, duration=0.5)
+    # pyautogui.click()
+    # pyautogui.moveTo(1380, 850, duration=0.5)
     time.sleep(30)
 
 
@@ -100,14 +110,15 @@ def fill_file(filename, index=0):
         elif index == 2:
             content = content[5:]
             num_rows = 5
-        data = f'"""\n{content}\n"""\nFor {filename}_{index}, I want all {num_rows} rows in jsonl format'
+        data = f'"""\n{content}\n"""\nこのデータセット({filename}_{index}){num_rows}件を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報を必ず日本語に翻訳し、必ずHTMLと絵文字を含むCoT形式の回答を生成してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。※答えにもっとCoT形式を入れてほしい\n※答えにもっと絵文字を入れてほしい'
+
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
     pyautogui.moveTo(1320, 850, duration=0.5)
     pyautogui.click()
-    pyautogui.moveTo(1400, 850, duration=0.5)
-    time.sleep(180)
+    pyautogui.moveTo(1400, 650, duration=0.5)
+    time.sleep(120)
 
 
 def is_valid_format(obj):
@@ -133,7 +144,8 @@ def is_jsonl(lines):
 
 
 def append_data(filename, retry, index=0):
-    y_cors = [263, 273, 283, 293, 303, 313,323,333,343,353,363, 373, 383, 393, 403, 413, 423, 433, 453, 463, 473]
+    pyautogui.scroll(-100)
+    y_cors = [163,173,183,193,203,213,223,233,243,253, 263, 273, 283, 293, 303, 313,323,333,343,353,363, 373, 383, 393, 403, 413, 423, 433, 453, 463, 473]
     clipboard_data = ""
     num_rows = 0
     lines = []
@@ -151,15 +163,17 @@ def append_data(filename, retry, index=0):
         if num_rows == check_rows:
             break
 
+    is_appended = True
     if num_rows != check_rows or is_jsonl(lines) is False:
         clipboard_data = f"Error: {filename}, {num_rows}lines (index: {index})\n"
+        is_appended = False
         if retry:
             return False
 
     with open("data/squad/translated.jsonl", "a", encoding="utf-8") as f:
         f.write(clipboard_data)
 
-    return True
+    return is_appended
 
 
 def delete_temp_files():
@@ -187,9 +201,10 @@ destination_folder = "temp/"
 
 
 last = 4341
-start = 2934
+start = 4341
 files = os.listdir(source_folder)
-files = sorted(files, key=extract_number)[start:last]
+files = sorted(files, key=extract_number)[start:]
+error_count = 0
 
 is_first = True
 count = 1
@@ -202,20 +217,26 @@ for filename in files:
     if count == 0:
         fill_first(is_first)
 
-    fill_file(filename)
-    is_appended = append_data(filename, True)
-
+    # fill_file(filename)
+    # is_appended = append_data(filename, True)
+    is_appended = False
     if is_appended is False:
         for index in [1, 2]:
             fill_file(filename, index)
-            append_data(filename, False, index)
+            is_appended = append_data(filename, False, index)
+            if is_appended:
+                error_count = 0
+            else:
+                error_count += 1
 
     pyautogui.moveTo(900, 850, duration=0.5)
     pyautogui.click()
 
     is_first = False
     count += 1
-    if count >= 100:
+    if count >= 30:
         count = 0
-        # time.sleep(300)
+        time.sleep(300)
+
+    if error_count >= 5:
         break
