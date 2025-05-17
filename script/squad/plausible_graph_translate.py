@@ -92,7 +92,7 @@ def fill_first(is_first):
     pyautogui.click()
     time.sleep(10)
 
-    pyautogui.moveTo(180, 270, duration=0.5)
+    pyautogui.moveTo(180, 290, duration=0.5)
     pyautogui.click()
     time.sleep(10)
 
@@ -128,7 +128,7 @@ def fill_file(filename, index=0):
             content = content[:5]
         elif index == 2:
             content = content[5:]
-        data = f'"""\n{content}\n"""\nこのデータセット({filename}_{index})を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、グラフ情報を必ず参照して、HTMLと絵文字を含むCoT形式の回答を生成してください。グラフ情報は必ず含め、誤答候補も出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。\n※回答にCoT形式をもっと入れて欲しい\n※答えにもっと絵文字を入れて欲しい\n※ノードの「name」を日本語に翻訳して欲しい'
+        data = f'"""\n{content}\n"""\nこのデータセット({filename}_{index})を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、グラフ情報を必ず参照して、HTMLと絵文字を含むCoT形式の回答を生成してください。グラフ情報は必ず含め、誤答候補も出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。\n※答えにCoT形式をもっと詳しく入れて欲しい\n※答えにもっと絵文字を入れて欲しい\n※ノードの「name」を日本語に翻訳して欲しい'
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
@@ -255,22 +255,36 @@ def append_data(filename, retry, index=0):
     for y_cor in y_cors:
         copy(y_cor)
         clipboard_data = pyperclip.paste()
-        clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
-        clipboard_data = [
-            line
-            for line in clipboard_data.strip().splitlines()
-            if line not in ["", "}", ",", "},"]
-        ]
-        clipboard_data = [
-            (
-                line.strip() + ("}" if line.strip().endswith("}]}") else "")
-                if not line.endswith("}]}}")
-                else line
+        temp_lines = clipboard_data.clipboard_data.strip().splitlines()
+
+        if temp_lines > 10:
+            clipboard_data = clipboard_data.strip().split("\n\n")
+
+            clipboard_data = [json.loads(obj) for obj in clipboard_data]
+
+            clipboard_data = "\n".join(
+                json.dumps(obj, ensure_ascii=False) for obj in clipboard_data
             )
-            for line in clipboard_data
-        ]
-        clipboard_data = [(line.replace("}]}},", "}]}}")) for line in clipboard_data]
-        clipboard_data = "\n".join(clipboard_data)
+        else:
+            clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
+            clipboard_data = [
+                line
+                for line in clipboard_data.strip().splitlines()
+                if line not in ["", "}", ",", "},"]
+            ]
+            clipboard_data = [
+                (
+                    line.strip() + ("}" if line.strip().endswith("}]}") else "")
+                    if not line.endswith("}]}}")
+                    else line
+                )
+                for line in clipboard_data
+            ]
+            clipboard_data = [
+                (line.replace("}]}},", "}]}}")) for line in clipboard_data
+            ]
+            clipboard_data = "\n".join(clipboard_data)
+
         clipboard_data += "\n"
 
         lines = clipboard_data.strip().splitlines()
@@ -317,11 +331,11 @@ destination_folder = "temp/"
 
 
 last = 2174
-start = 3152
+start = 3423
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:]
 is_first = True
-count = 0
+count = 1
 error_count = 0
 for filename in files:
     source_path = os.path.join(source_folder, filename)
