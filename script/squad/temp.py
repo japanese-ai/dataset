@@ -71,71 +71,73 @@ def is_jsonl(lines):
 
 clipboard_data = """
 {
-  "質問": "壊血病を防ぐのに効果があるとされた果物のジュースは何ですか？",
-  "参考情報": "ジェームズ・リンドはライムジュースが長期間航海していた船乗りの壊血病を防ぐことを発見しました。",
-  "答え": "<p>💡<strong>ステップ1：</strong> 壊血病とはビタミンC不足による出血性の病気です。🩸</p><p>🔬<strong>ステップ2：</strong> 1747年、イギリス海軍の医師<strong>ジェームズ・リンド</strong>が、ライムジュースが壊血病を予防する効果を発見しました。🍋</p><p>📜<strong>ステップ3：</strong> この発見は当初は無視されましたが、後にイギリスの船員は「ライミー（limeys）」と呼ばれるようになります。⚓️</p><p>✅まとめ：壊血病の予防に有効だったのは<strong>ライム</strong>のジュースでした。</p>",
+  "質問": "なぜPhoto CDはすべてのコンピュータで動作しないのですか？",
+  "参考情報": "Photo CDはKodakによって設計され、高品質の画像をCDにデジタル化して保存するシステムです。このシステムでは、専用のKodak機器を使用して画像を印刷することもできます。",
+  "誤答候補": "特別なKodak機器",
+  "答え": "<p>Photo CDは、<strong>特別なKodak機器</strong>が必要なため、すべてのコンピュータで動作しません。📄 ✅</p><ul><li>Photo CDは専用のソフトウェアやハードウェアで再生できます。</li><li>これにより、画像を印刷したり、高画質で閲覧したりできます。</li><li>そのため、一般的なコンピュータでは再生できません。</li></ul><p>まとめ：Photo CDは、<strong>特別なKodak機器</strong>が必要です。✅</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "Lime_Juice", "label": "Substance", "name": "ライムジュース" },
-      { "id": "Scurvy", "label": "Disease", "name": "壊血病" }
+      { "id": "Photo_CD", "label": "Photo CD", "name": "Photo CD" },
+      { "id": "Kodak_Machine", "label": "Kodak機器", "name": "Kodak機器" }
     ],
     "関係": [
-      { "source": "Lime_Juice", "relation": "prevents", "target": "Scurvy" }
+      { "source": "Photo_CD", "relation": "requires", "target": "Kodak_Machine" }
     ]
   }
 }
 {
-  "質問": "1500年から1800年の間に壊血病で亡くなった船員の数は？",
-  "参考情報": "1500年から1800年の間に約200万人の船員が壊血病で死亡しました。",
-  "答え": "<p>📊<strong>ステップ1：</strong> 壊血病はビタミンC不足により、長期間の航海中に多くの船員を襲った病気です。🚢</p><p>📅<strong>ステップ2：</strong> 1500年から1800年の間に、約<strong>200万人</strong>もの船員が壊血病で命を落としました。☠️</p><p>🧠<strong>ステップ3：</strong> この数字は壊血病の重大さと予防手段の重要性を物語っています。🔍</p><p>✅まとめ：壊血病により<strong>200万人</strong>が命を落としました。</p>",
+  "質問": "Kodak Picture CDはいつ発売されましたか？",
+  "参考情報": "Photo CDはKodakによって設計され、高品質の画像をCDにデジタル化して保存するシステムです。Kodak Picture CDは、消費者向けのCD-ROM形式の製品です。",
+  "誤答候補": "1992年",
+  "答え": "<p>Kodak Picture CDは<strong>1992年</strong>に発売されました。📄 ✅</p><ul><li>Kodak Picture CDは、消費者向けのCD-ROM形式の製品です。</li><li>これは、普通のコンピュータで再生でき、写真を保存する目的で設計されました。</li><li>Photo CDは高品質の画像を保存するシステムであり、別の製品です。</li></ul><p>まとめ：Kodak Picture CDは<strong>1992年</strong>に発売されました。✅</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "Scurvy_Deaths", "label": "Event", "name": "壊血病による死者" }
+      { "id": "Kodak_Picture_CD", "label": "Kodak Picture CD", "name": "Kodak Picture CD" }
     ],
     "関係": [
-      { "source": "Scurvy_Deaths", "relation": "number", "target": "2000000" }
+      { "source": "Kodak_Picture_CD", "relation": "released_in", "target": "1992" }
     ]
   }
 }
 {
-  "質問": "イギリスの船員に付けられたあだ名は？",
-  "参考情報": "発見の後、イギリスの船員は「ライミー（limeys）」と呼ばれるようになりました。",
-  "答え": "<p>👨‍✈️<strong>ステップ1：</strong> ライムジュースで壊血病を予防したことから、イギリスの船員にユニークな呼び名が付きました。🍋</p><p>📣<strong>ステップ2：</strong> その呼び名は<strong>「ライミー（limeys）」</strong>です。これは彼らがライムを摂取していたことに由来します。🗣️</p><p>✅まとめ：イギリスの船員は「<strong>ライミー</strong>」と呼ばれました。</p>",
+  "質問": "Red Bookの「アンチコピー」サブコードはいつ書かれたのですか？",
+  "参考情報": "Red Bookオーディオ仕様は、サブコード内に簡単な「アンチコピー」声明を含んでいますが、コピー保護機構は含まれていません。2001年頃から、レコード会社は「コピー保護された」非標準コンパクトディスクを市場に出そうとしました。",
+  "誤答候補": "2001年",
+  "答え": "<p>Red Bookの「アンチコピー」サブコードは<strong>2001年</strong>に書かれました。📄 ✅</p><ul><li>コピー保護されたディスクは、Red Book仕様に違反しているため、Compact Disc Digital Audioロゴを付けることはできません。</li><li>コピー保護されたディスクの多くは、コンピュータのCD-ROMドライブや一部のCDプレーヤーで再生できません。</li><li>これらのコピー保護技術に対抗するため、無料のソフトウェアが利用可能です。</li></ul><p>まとめ：Red Bookの「アンチコピー」サブコードは<strong>2001年</strong>に書かれました。✅</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "British_Sailors", "label": "People", "name": "イギリスの船員" },
-      { "id": "Limeys", "label": "Nickname", "name": "ライミー" }
+      { "id": "Anti_Copy_Subcode", "label": "アンチコピーサブコード", "name": "アンチコピーサブコード" }
     ],
     "関係": [
-      { "source": "British_Sailors", "relation": "nickname", "target": "Limeys" }
+      { "source": "Anti_Copy_Subcode", "relation": "written_in", "target": "2001" }
     ]
   }
 }
 {
-  "質問": "どの栄養素が犬に与えられなかったために死亡したのか？",
-  "参考情報": "タンパク質を与えなかった犬は死亡しましたが、与えられた犬は生存しました。",
-  "答え": "<p>🐶<strong>ステップ1：</strong> 1816年、フランソワ・マジェンディが行った実験で、犬に炭水化物・脂肪・水のみを与えました。💧🍞🫒</p><p>☠️<strong>ステップ2：</strong> しかし<strong>タンパク質</strong>を含まない食事では犬は餓死しました。💀</p><p>🧬<strong>ステップ3：</strong> これにより、タンパク質は<strong>不可欠な栄養素</strong>であると認識されました。💪</p><p>✅まとめ：死亡の原因は<strong>タンパク質不足</strong>でした。</p>",
+  "質問": "コピー保護システムソフトウェアを作成したのは誰ですか？",
+  "参考情報": "Red Bookオーディオ仕様は、サブコード内に簡単な「アンチコピー」声明を含んでいます。これにより、コピー保護されたディスクが作成されました。これらのディスクは、コンピュータやCDプレーヤーで再生できない場合があります。",
+  "誤答候補": "Philips",
+  "答え": "<p>コピー保護システムソフトウェアは<strong>Philips</strong>によって作成されました。📄 ✅</p><ul><li>Philipsは、Red Book仕様に従って、コピー保護システムを開発しました。</li><li>これにより、コピー防止の技術が搭載されました。</li><li>多くのフリーソフトウェアがこれらの保護技術に対抗しています。</li></ul><p>まとめ：コピー保護システムソフトウェアは<strong>Philips</strong>によって作成されました。✅</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "Protein", "label": "Nutrient", "name": "タンパク質" },
-      { "id": "Dog_Death", "label": "Event", "name": "犬の死亡" }
+      { "id": "Anti_Copy_Software", "label": "コピー保護システムソフトウェア", "name": "コピー保護システムソフトウェア" }
     ],
     "関係": [
-      { "source": "Dog_Death", "relation": "caused_by_lack_of", "target": "Protein" }
+      { "source": "Anti_Copy_Software", "relation": "created_by", "target": "Philips" }
     ]
   }
 }
 {
-  "質問": "食品を最初にカテゴリー分けした人物は誰ですか？",
-  "参考情報": "ウィリアム・プラウトは1827年に食品を炭水化物・脂肪・タンパク質に分類した最初の人物でした。",
-  "答え": "<p>📚<strong>ステップ1：</strong> 食品の栄養素を分類することは、現代の栄養学の基本です。🍽️</p><p>👨‍🔬<strong>ステップ2：</strong> 1827年に<strong>ウィリアム・プラウト</strong>が食品を<strong>炭水化物・脂肪・タンパク質</strong>に分けました。🧪</p><p>🧠<strong>ステップ3：</strong> これが後の栄養分類と栄養バランス理論の礎となりました。📊</p><p>✅まとめ：食品を最初にカテゴリー化したのは<strong>ウィリアム・プラウト</strong>でした。</p>",
+  "質問": "Compact Disc Digital Audioロゴはいつ著作権が取得されたのですか？",
+  "参考情報": "Red Bookオーディオ仕様は、サブコード内に簡単な「アンチコピー」声明を含んでいます。これにより、コピー保護されたディスクが作成されました。多くのコピー保護されたディスクは、コンピュータやCDプレーヤーで再生できません。",
+  "誤答候補": "2001年",
+  "答え": "<p>Compact Disc Digital Audioロゴは<strong>2001年</strong>に著作権が取得されました。📄 ✅</p><ul><li>このロゴは、Red Book仕様に従って、コピー保護されたディスクを認識するために使用されます。</li><li>このロゴを付けることで、コピー保護されたディスクが標準仕様に従っていることが確認されます。</li><li>著作権は、コピー保護技術と関連しています。</li></ul><p>まとめ：Compact Disc Digital Audioロゴは<strong>2001年</strong>に著作権が取得されました。✅</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "William_Prout", "label": "Person", "name": "ウィリアム・プラウト" },
-      { "id": "Nutrient_Categories", "label": "Concept", "name": "栄養分類（炭水化物・脂肪・タンパク質）" }
+      { "id": "CD_Digital_Audio_Logo", "label": "CD Digital Audioロゴ", "name": "CD Digital Audioロゴ" }
     ],
     "関係": [
-      { "source": "William_Prout", "relation": "categorized", "target": "Nutrient_Categories" }
+      { "source": "CD_Digital_Audio_Logo", "relation": "copyrighted_in", "target": "2001" }
     ]
   }
 }
@@ -145,14 +147,16 @@ temp_lines = clipboard_data.strip().splitlines()
 
 patterns = [(r"\n},\n{", "\n}\n\n{"), (r"\n}\n{", "\n}\n\n{")]
 
-def replace_with_fallback(data):
-  for pattern, replacement in patterns:
-    match = re.search(pattern, data, re.MULTILINE)
-    if match:
-      data = re.sub(pattern, replacement, data, flags=re.MULTILINE)
-      break
 
-  return data
+def replace_with_fallback(data):
+    for pattern, replacement in patterns:
+        match = re.search(pattern, data, re.MULTILINE)
+        if match:
+            data = re.sub(pattern, replacement, data, flags=re.MULTILINE)
+            break
+
+    return data
+
 
 if len(temp_lines) > 10:
     clipboard_data = replace_with_fallback(clipboard_data)
