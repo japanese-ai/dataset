@@ -332,7 +332,7 @@ destination_folder = "temp/"
 
 
 last = 2174
-start = 3481
+start = 3500
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:]
 is_first = True
@@ -352,7 +352,7 @@ for filename in files:
     is_appended = False
 
     if is_appended is False:
-        for index in [1, 2]:
+        for index in [2]:
             fill_file(filename, index)
             is_appended = append_data(filename, False, index)
             if is_appended is True:
