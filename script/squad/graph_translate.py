@@ -206,6 +206,16 @@ def is_jsonl(lines):
             return False
     return True
 
+def replace_with_fallback(data):
+    patterns = [(r"\n},\n{", "\n}\n\n{"), (r"\n}\n{", "\n}\n\n{")]
+    for pattern, replacement in patterns:
+        match = re.search(pattern, data, re.MULTILINE)
+        if match:
+            data = re.sub(pattern, replacement, data, flags=re.MULTILINE)
+            break
+
+    return data
+
 
 def append_data(filename, retry, index=0):
     pyautogui.scroll(-100)
@@ -220,6 +230,7 @@ def append_data(filename, retry, index=0):
         temp_lines = clipboard_data.strip().splitlines()
 
         if len(temp_lines) > 10:
+            clipboard_data = replace_with_fallback(clipboard_data)
             clipboard_data = clipboard_data.strip().split("\n\n")
 
             clipboard_data = [json.loads(obj) for obj in clipboard_data]
@@ -291,7 +302,7 @@ destination_folder = "temp/"
 
 
 last = 4341
-start = 4694
+start = 4707
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:]
 error_count = 0
@@ -311,7 +322,7 @@ for filename in files:
     # is_appended = append_data(filename, True)
     is_appended = False
     if is_appended is False:
-        for index in [1, 2]:
+        for index in [2]:
             fill_file(filename, index)
             is_appended = append_data(filename, False, index)
             if is_appended:

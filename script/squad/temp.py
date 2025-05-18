@@ -1,4 +1,5 @@
 import json
+import re
 
 
 def is_valid_graph_info(graph_info):
@@ -34,7 +35,7 @@ def is_valid_graph_info(graph_info):
 
 
 def is_valid_format(obj):
-    required_keys = {"質問", "参考情報", "誤答候補", "答え"}
+    required_keys = {"質問", "参考情報", "答え"}
 
     if not isinstance(obj, dict):
         return False
@@ -70,81 +71,71 @@ def is_jsonl(lines):
 
 clipboard_data = """
 {
-  "質問": "チャールストンの市内で記録された最も低い温度は何度ですか？",
-  "参考情報": "チャールストンの市内で記録された最も高い温度は1985年6月2日と1944年6月24日に104°F（40°C）で、最も低い温度は1899年2月14日に7°F（−14°C）でした。空港では、公式記録が保持されており、1999年8月1日に105°F（41°C）から1985年1月21日に6°F（−14°C）までの歴史的な範囲があります。ハリケーンは夏と初秋にこの地域にとって大きな脅威です。",
-  "誤答候補": "104°F",
-  "答え": "<p><strong>チャールストン市内で記録された最も低い温度は<strong>7°F（−14°C）</strong>です。🌨️</p><p><strong>理由</strong>: この温度は1899年2月14日に記録され、最も低い気温です。📄</p><p><strong>なぜ7°Fだったのか？</strong>: 冷たい冬の一環として、1899年に記録されました。✅</p>",
+  "質問": "壊血病を防ぐのに効果があるとされた果物のジュースは何ですか？",
+  "参考情報": "ジェームズ・リンドはライムジュースが長期間航海していた船乗りの壊血病を防ぐことを発見しました。",
+  "答え": "<p>💡<strong>ステップ1：</strong> 壊血病とはビタミンC不足による出血性の病気です。🩸</p><p>🔬<strong>ステップ2：</strong> 1747年、イギリス海軍の医師<strong>ジェームズ・リンド</strong>が、ライムジュースが壊血病を予防する効果を発見しました。🍋</p><p>📜<strong>ステップ3：</strong> この発見は当初は無視されましたが、後にイギリスの船員は「ライミー（limeys）」と呼ばれるようになります。⚓️</p><p>✅まとめ：壊血病の予防に有効だったのは<strong>ライム</strong>のジュースでした。</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "Charleston_Low_Temperature", "label": "Temperature", "name": "7°F（−14°C）" },
-      { "id": "City_Charleston", "label": "City", "name": "チャールストン" }
+      { "id": "Lime_Juice", "label": "Substance", "name": "ライムジュース" },
+      { "id": "Scurvy", "label": "Disease", "name": "壊血病" }
     ],
     "関係": [
-      { "source": "City_Charleston", "relation": "has_lowest_temperature_of", "target": "Charleston_Low_Temperature" }
+      { "source": "Lime_Juice", "relation": "prevents", "target": "Scurvy" }
     ]
   }
 }
-
 {
-  "質問": "チャールストンの夏と初秋において、軽度な脅威となる嵐の種類は何ですか？",
-  "参考情報": "チャールストンは湿潤亜熱帯気候（ケッペン気候分類Cfa）で、夏と初秋においてハリケーンが主な脅威となります。特に、1989年9月21日に発生したハリケーン・ヒューゴはカテゴリー4の嵐でした。夏の間、降水量は雷雨という形で降り、湿度も高くなります。",
-  "誤答候補": "ハリケーン",
-  "答え": "<p><strong>チャールストンの夏と初秋において軽度な脅威となる嵐の種類は<strong>ハリケーン</strong>です。🌪️</p><p><strong>理由</strong>: ハリケーンはこの地域でよく発生し、特に1989年のハリケーン・ヒューゴは大きな影響を与えました。📄</p><p><strong>なぜハリケーンが脅威となるのか？</strong>: 夏と初秋に発生することが多く、巨大な影響を与えるためです。✅</p>",
+  "質問": "1500年から1800年の間に壊血病で亡くなった船員の数は？",
+  "参考情報": "1500年から1800年の間に約200万人の船員が壊血病で死亡しました。",
+  "答え": "<p>📊<strong>ステップ1：</strong> 壊血病はビタミンC不足により、長期間の航海中に多くの船員を襲った病気です。🚢</p><p>📅<strong>ステップ2：</strong> 1500年から1800年の間に、約<strong>200万人</strong>もの船員が壊血病で命を落としました。☠️</p><p>🧠<strong>ステップ3：</strong> この数字は壊血病の重大さと予防手段の重要性を物語っています。🔍</p><p>✅まとめ：壊血病により<strong>200万人</strong>が命を落としました。</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "Charleston_Threat_Storm", "label": "Storm", "name": "ハリケーン" },
-      { "id": "Season_Summer_Fall", "label": "Season", "name": "夏と初秋" }
+      { "id": "Scurvy_Deaths", "label": "Event", "name": "壊血病による死者" }
     ],
     "関係": [
-      { "source": "Season_Summer_Fall", "relation": "experiences", "target": "Charleston_Threat_Storm" }
+      { "source": "Scurvy_Deaths", "relation": "number", "target": "2000000" }
     ]
   }
 }
-
 {
-  "質問": "チャールストンで1998年に発生したハリケーンは何ですか？",
-  "参考情報": "チャールストンの最も著名なハリケーンの1つは1989年9月21日に発生したハリケーン・ヒューゴです。このカテゴリー4の嵐は市内に大きな影響を与えました。1998年に発生したハリケーンは記録されていません。",
-  "誤答候補": "ハリケーン・ヒューゴ",
-  "答え": "<p><strong>1998年にチャールストンで発生したハリケーンは<strong>記録されていません</strong>。⚠️</p><p><strong>理由</strong>: 1998年に特定のハリケーンが記録されていないためです。📄</p><p><strong>なぜ1998年にハリケーンが発生しなかったのか？</strong>: 1998年は特定の影響を与えるハリケーンが発生しませんでした。✅</p>",
+  "質問": "イギリスの船員に付けられたあだ名は？",
+  "参考情報": "発見の後、イギリスの船員は「ライミー（limeys）」と呼ばれるようになりました。",
+  "答え": "<p>👨‍✈️<strong>ステップ1：</strong> ライムジュースで壊血病を予防したことから、イギリスの船員にユニークな呼び名が付きました。🍋</p><p>📣<strong>ステップ2：</strong> その呼び名は<strong>「ライミー（limeys）」</strong>です。これは彼らがライムを摂取していたことに由来します。🗣️</p><p>✅まとめ：イギリスの船員は「<strong>ライミー</strong>」と呼ばれました。</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "Hurricane_Hugo", "label": "Hurricane", "name": "ハリケーン・ヒューゴ" },
-      { "id": "Year_1998", "label": "Year", "name": "1998年" }
+      { "id": "British_Sailors", "label": "People", "name": "イギリスの船員" },
+      { "id": "Limeys", "label": "Nickname", "name": "ライミー" }
     ],
     "関係": [
-      { "source": "Year_1998", "relation": "had_no_hurricane_in", "target": "Hurricane_Hugo" }
+      { "source": "British_Sailors", "relation": "nickname", "target": "Limeys" }
     ]
   }
 }
-
 {
-  "質問": "チャールストンの市内で記録された最も高い温度は何度ですか？",
-  "参考情報": "チャールストンの市内で記録された最も高い温度は、1985年6月2日と1944年6月24日に104°F（40°C）でした。空港では公式記録が保持されており、1999年8月1日に105°F（41°C）に達したことがあります。",
-  "誤答候補": "7°F（−14°C）",
-  "答え": "<p><strong>チャールストンの市内で記録された最も高い温度は<strong>104°F（40°C）</strong>です。🌞</p><p><strong>理由</strong>: 104°F（40°C）は1985年6月2日と1944年6月24日に記録され、最も高い気温となっています。📄</p><p><strong>なぜ104°Fだったのか？</strong>: これがチャールストンで記録された最も高い気温です。✅</p>",
+  "質問": "どの栄養素が犬に与えられなかったために死亡したのか？",
+  "参考情報": "タンパク質を与えなかった犬は死亡しましたが、与えられた犬は生存しました。",
+  "答え": "<p>🐶<strong>ステップ1：</strong> 1816年、フランソワ・マジェンディが行った実験で、犬に炭水化物・脂肪・水のみを与えました。💧🍞🫒</p><p>☠️<strong>ステップ2：</strong> しかし<strong>タンパク質</strong>を含まない食事では犬は餓死しました。💀</p><p>🧬<strong>ステップ3：</strong> これにより、タンパク質は<strong>不可欠な栄養素</strong>であると認識されました。💪</p><p>✅まとめ：死亡の原因は<strong>タンパク質不足</strong>でした。</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "Charleston_High_Temperature", "label": "Temperature", "name": "104°F（40°C）" },
-      { "id": "City_Charleston", "label": "City", "name": "チャールストン" }
+      { "id": "Protein", "label": "Nutrient", "name": "タンパク質" },
+      { "id": "Dog_Death", "label": "Event", "name": "犬の死亡" }
     ],
     "関係": [
-      { "source": "City_Charleston", "relation": "has_highest_temperature_of", "target": "Charleston_High_Temperature" }
+      { "source": "Dog_Death", "relation": "caused_by_lack_of", "target": "Protein" }
     ]
   }
 }
-
 {
-  "質問": "チャールストンの空港で1999年8月1日に記録された最も暖かい日付はいつですか？",
-  "参考情報": "チャールストンの空港では、1999年8月1日に記録的な105°F（41°C）が記録されました。この日が空港での最も暖かい日とされています。",
-  "誤答候補": "1985年1月21日",
-  "答え": "<p><strong>チャールストンの空港で1999年8月1日に記録された最も暖かい日付は<strong>1999年8月1日</strong>です。🌡️</p><p><strong>理由</strong>: 1999年8月1日が空港で最も高い気温が記録された日です。📄</p><p><strong>なぜ1999年8月1日なのか？</strong>: 空港で最も高い気温の記録として残っているからです。✅</p>",
+  "質問": "食品を最初にカテゴリー分けした人物は誰ですか？",
+  "参考情報": "ウィリアム・プラウトは1827年に食品を炭水化物・脂肪・タンパク質に分類した最初の人物でした。",
+  "答え": "<p>📚<strong>ステップ1：</strong> 食品の栄養素を分類することは、現代の栄養学の基本です。🍽️</p><p>👨‍🔬<strong>ステップ2：</strong> 1827年に<strong>ウィリアム・プラウト</strong>が食品を<strong>炭水化物・脂肪・タンパク質</strong>に分けました。🧪</p><p>🧠<strong>ステップ3：</strong> これが後の栄養分類と栄養バランス理論の礎となりました。📊</p><p>✅まとめ：食品を最初にカテゴリー化したのは<strong>ウィリアム・プラウト</strong>でした。</p>",
   "グラフ情報": {
     "ノード": [
-      { "id": "Date_1999_08_01", "label": "Date", "name": "1999年8月1日" },
-      { "id": "Charleston_Airport", "label": "Location", "name": "チャールストン空港" }
+      { "id": "William_Prout", "label": "Person", "name": "ウィリアム・プラウト" },
+      { "id": "Nutrient_Categories", "label": "Concept", "name": "栄養分類（炭水化物・脂肪・タンパク質）" }
     ],
     "関係": [
-      { "source": "Charleston_Airport", "relation": "recorded_highest_temperature_on", "target": "Date_1999_08_01" }
+      { "source": "William_Prout", "relation": "categorized", "target": "Nutrient_Categories" }
     ]
   }
 }
@@ -152,8 +143,19 @@ clipboard_data = """
 """
 temp_lines = clipboard_data.strip().splitlines()
 
+patterns = [(r"\n},\n{", "\n}\n\n{"), (r"\n}\n{", "\n}\n\n{")]
+
+def replace_with_fallback(data):
+  for pattern, replacement in patterns:
+    match = re.search(pattern, data, re.MULTILINE)
+    if match:
+      data = re.sub(pattern, replacement, data, flags=re.MULTILINE)
+      break
+
+  return data
+
 if len(temp_lines) > 10:
-    clipboard_data = clipboard_data.strip().replace("\n},\n{", "\n}\n\n{")
+    clipboard_data = replace_with_fallback(clipboard_data)
     clipboard_data = clipboard_data.strip().split("\n\n")
     clipboard_data = [json.loads(obj) for obj in clipboard_data]
 
