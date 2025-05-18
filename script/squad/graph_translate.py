@@ -216,6 +216,7 @@ def replace_with_fallback(data):
 
     return data
 
+examples_data = example_data = ['"グラフ情報":{"ノード":[{"id":"Visa_Student","label":"VisaType","name":"学生ビザ"},{"id":"Doc_CoE","label":"Document","name":"証明書"}],"関係":[{"source":"Visa_Student","relation":"requires_document","target":"Doc_CoE"}]}']
 
 def append_data(filename, retry, index=0):
     pyautogui.scroll(-100)
@@ -227,6 +228,7 @@ def append_data(filename, retry, index=0):
     for y_cor in y_cors:
         copy(y_cor)
         clipboard_data = pyperclip.paste()
+
         temp_lines = clipboard_data.strip().splitlines()
 
         if len(temp_lines) > 10:
@@ -257,6 +259,10 @@ def append_data(filename, retry, index=0):
             clipboard_data = "\n".join(clipboard_data)
 
         clipboard_data += "\n"
+
+        if any(item in clipboard_data for item in example_data):
+            num_rows = 0
+            break
 
         lines = clipboard_data.strip().splitlines()
         num_rows = len(lines)
@@ -302,7 +308,7 @@ destination_folder = "temp/"
 
 
 last = 4341
-start = 4707
+start = 4708
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:]
 error_count = 0
@@ -322,7 +328,7 @@ for filename in files:
     # is_appended = append_data(filename, True)
     is_appended = False
     if is_appended is False:
-        for index in [2]:
+        for index in [1, 2]:
             fill_file(filename, index)
             is_appended = append_data(filename, False, index)
             if is_appended:
@@ -335,7 +341,7 @@ for filename in files:
 
     is_first = False
     count += 1
-    if count >= 30:
+    if count >= 20:
         count = 0
         time.sleep(300)
 
