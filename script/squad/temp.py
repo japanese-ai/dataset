@@ -62,19 +62,125 @@ def is_jsonl(lines):
             if not is_valid_format(obj):
                 print(f"Invalid format in line {i}: {line}")
                 return False
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
+            print(e)
             return False
     return True
 
 
-data = """{"質問":"2012年5月に目標を演説で述べたのは誰ですか？","参考情報":"オバマ大統領は2013年5月に、アメリカを脅かす過激派ネットワークの解体を目標とする演説を行ったと記載されています。","誤答候補":"オバマ","答え":"<p>📆 <strong>ステップ1:</strong> 質問では「2012年5月」とありますが、文中では<strong>2013年5月</strong>にオバマ大統領が目標を明言したとされています。</p>\n<p>🧾 <strong>ステップ2:</strong> よって「2012年5月」とするのは文書と一致せず、明確にサポートされていません。</p>\n<p>❌ <strong>誤答:</strong> 「オバマ」→ 人物自体は正しいが、日付が一致しないため誤答とされます。</p>\n<p>⚠️ <strong>結論:</strong> オバマは2013年に目標を述べており、2012年ではありません。</p>\n<p>まとめ文：「<strong>オバマ大統領</strong>」が目標を述べたのは<strong>2013年5月</strong>であり、「2012年5月」ではないため、この答えは<strong>誤り</strong>です。❌</p>","グラフ情報":{"ノード":[{"id":"Barack_Obama","label":"Person","name":"バラク・オバマ"},{"id":"Speech_2013_May","label":"Speech","name":"2013年5月の演説"},{"id":"Goal_CounterExtremism","label":"Goal","name":"過激派ネットワークの解体"}],"関係":[{"source":"Barack_Obama","relation":"delivered","target":"Speech_2013_May"},{"source":"Speech_2013_May","relation":"defined_goal","target":"Goal_CounterExtremism"}]}}
-{"質問":"「海外緊急作戦」が「暴力的過激主義対策」に変更されたのは何年ですか？","参考情報":"「海外緊急作戦（Overseas Contingency Operations）」という言葉は2010年に「暴力的過激主義対策（Countering Violent Extremism）」に変更されたとあります。","誤答候補":"2010年","答え":"<p>📅 <strong>ステップ1:</strong> 文中には、2010年に米国行政管理予算局が用語を変更したと明記されています。</p>\n<p>🗂 <strong>ステップ2:</strong> 「Overseas Contingency Operations」→「Countering Violent Extremism」へと変化しました。</p>\n<p>❌ <strong>誤答:</strong> 「2010年」→ 実際は正しい年ですが、形式上誤答候補となっています。</p>\n<p>✅ <strong>結論:</strong> 正確な年は<strong>2010年</strong>です。</p>\n<p>まとめ文：「<strong>海外緊急作戦</strong>」という名称は<strong>2010年</strong>に「<strong>暴力的過激主義対策</strong>」に変更されました。✅</p>","グラフ情報":{"ノード":[{"id":"OCO","label":"Term","name":"海外緊急作戦"},{"id":"CVE","label":"Term","name":"暴力的過激主義対策"}],"関係":[{"source":"OCO","relation":"renamed_to","target":"CVE"}]}}
-{"質問":"2009年に「Overseas Contingency Operation」は何に改名されましたか？","参考情報":"2009年に「Global War on Terror（対テロ戦争）」から「Overseas Contingency Operation（海外緊急作戦）」へ名称が変更されたとあります。","誤答候補":"対テロ戦争","答え":"<p>🔄 <strong>ステップ1:</strong> 文中では、2009年に国防総省が「対テロ戦争」の名称を「Overseas Contingency Operation（OCO）」に変更したと述べられています。</p>\n<p>📄 <strong>ステップ2:</strong> 「Overseas Contingency Operation」は新名称であり、旧称は「対テロ戦争」です。</p>\n<p>❌ <strong>誤答:</strong> 「対テロ戦争」→ これは旧名称であり、質問は「何に改名されたか？」なので逆です。</p>\n<p>⚠️ <strong>結論:</strong> この答えは方向が逆であり、正確ではありません。</p>\n<p>まとめ文：「<strong>Overseas Contingency Operation</strong>」は2009年に「<strong>対テロ戦争</strong>」から変更された名称であり、この答えは<strong>誤り</strong>です。❌</p>","グラフ情報":{"ノード":[{"id":"Global_War_Terror","label":"Term","name":"対テロ戦争"},{"id":"OCO","label":"Term","name":"海外緊急作戦"}],"関係":[{"source":"Global_War_Terror","relation":"renamed_to","target":"OCO"}]}}
-{"質問":"国防総省はその名前を何に変更しましたか？","参考情報":"国防総省（Department of Defense）は「対テロ戦争」の名称を「海外緊急作戦（Overseas Contingency Operation）」に変更したと書かれています。","誤答候補":"米国行政管理予算局","答え":"<p>🏛 <strong>ステップ1:</strong> 国防総省が変更したのは自身の名称ではなく、「作戦の名称」です。</p>\n<p>📄 <strong>ステップ2:</strong> 具体的には、「Global War on Terror（対テロ戦争）」→「Overseas Contingency Operation（OCO）」です。</p>\n<p>❌ <strong>誤答:</strong> 「米国行政管理予算局（OMB）」→ この機関は<strong>用語の変更</strong>に関わったが、国防総省の名前ではない。</p>\n<p>⚠️ <strong>結論:</strong> 国防総省が変更したのは自らの名前ではなく、作戦名です。誤答は別機関の名称で誤解を招きます。</p>\n<p>まとめ文：<strong>国防総省</strong>が変更したのは「対テロ戦争」→「<strong>海外緊急作戦</strong>」という<strong>作戦名</strong>であり、この選択肢は不適切です。❌</p>","グラフ情報":{"ノード":[{"id":"Dept_Defense","label":"Organization","name":"国防総省"},{"id":"Global_War_Terror","label":"Term","name":"対テロ戦争"},{"id":"OCO","label":"Term","name":"海外緊急作戦"}],"関係":[{"source":"Dept_Defense","relation":"renamed_term_from_to","target":["Global_War_Terror","OCO"]}]}}
-{"質問":"ジェイ・ジョンソンはどの大学で働いていましたか？","参考情報":"ジェイ・ジョンソンは2012年にオックスフォード大学で講演を行ったとありますが、その大学で「働いていた」とは書かれていません。","誤答候補":"オックスフォード","答え":"<p>🏫 <strong>ステップ1:</strong> 文中では、ジェイ・ジョンソンは「2012年にオックスフォード大学で講演した」と記述されています。</p>\n<p>💼 <strong>ステップ2:</strong> 「講演した」＝「勤務していた」とは限りません。<strong>在籍情報は書かれていません</strong>。</p>\n<p>❌ <strong>誤答:</strong> 「オックスフォード」→ この大学で働いていたという記載はないため誤りです。</p>\n<p>⚠️ <strong>結論:</strong> ジョンソン氏がこの大学で職を得ていた証拠は文中にありません。</p>\n<p>まとめ文：「<strong>オックスフォード大学</strong>」で講演は行いましたが、「<strong>勤務</strong>していた」とは記されておらず、この答えは<strong>誤り</strong>です。❌</p>","グラフ情報":{"ノード":[{"id":"Jeh_Johnson","label":"Person","name":"ジェイ・ジョンソン"},{"id":"Oxford_Uni","label":"Location","name":"オックスフォード大学"},{"id":"Event_2012","label":"Event","name":"2012年の講演"}],"関係":[{"source":"Jeh_Johnson","relation":"gave_speech_at","target":"Event_2012"},{"source":"Event_2012","relation":"held_at","target":"Oxford_Uni"}]}}
+clipboard_data = """
+{
+  "質問": "チャールストンの市内で記録された最も低い温度は何度ですか？",
+  "参考情報": "チャールストンの市内で記録された最も高い温度は1985年6月2日と1944年6月24日に104°F（40°C）で、最も低い温度は1899年2月14日に7°F（−14°C）でした。空港では、公式記録が保持されており、1999年8月1日に105°F（41°C）から1985年1月21日に6°F（−14°C）までの歴史的な範囲があります。ハリケーンは夏と初秋にこの地域にとって大きな脅威です。",
+  "誤答候補": "104°F",
+  "答え": "<p><strong>チャールストン市内で記録された最も低い温度は<strong>7°F（−14°C）</strong>です。🌨️</p><p><strong>理由</strong>: この温度は1899年2月14日に記録され、最も低い気温です。📄</p><p><strong>なぜ7°Fだったのか？</strong>: 冷たい冬の一環として、1899年に記録されました。✅</p>",
+  "グラフ情報": {
+    "ノード": [
+      { "id": "Charleston_Low_Temperature", "label": "Temperature", "name": "7°F（−14°C）" },
+      { "id": "City_Charleston", "label": "City", "name": "チャールストン" }
+    ],
+    "関係": [
+      { "source": "City_Charleston", "relation": "has_lowest_temperature_of", "target": "Charleston_Low_Temperature" }
+    ]
+  }
+}
+
+{
+  "質問": "チャールストンの夏と初秋において、軽度な脅威となる嵐の種類は何ですか？",
+  "参考情報": "チャールストンは湿潤亜熱帯気候（ケッペン気候分類Cfa）で、夏と初秋においてハリケーンが主な脅威となります。特に、1989年9月21日に発生したハリケーン・ヒューゴはカテゴリー4の嵐でした。夏の間、降水量は雷雨という形で降り、湿度も高くなります。",
+  "誤答候補": "ハリケーン",
+  "答え": "<p><strong>チャールストンの夏と初秋において軽度な脅威となる嵐の種類は<strong>ハリケーン</strong>です。🌪️</p><p><strong>理由</strong>: ハリケーンはこの地域でよく発生し、特に1989年のハリケーン・ヒューゴは大きな影響を与えました。📄</p><p><strong>なぜハリケーンが脅威となるのか？</strong>: 夏と初秋に発生することが多く、巨大な影響を与えるためです。✅</p>",
+  "グラフ情報": {
+    "ノード": [
+      { "id": "Charleston_Threat_Storm", "label": "Storm", "name": "ハリケーン" },
+      { "id": "Season_Summer_Fall", "label": "Season", "name": "夏と初秋" }
+    ],
+    "関係": [
+      { "source": "Season_Summer_Fall", "relation": "experiences", "target": "Charleston_Threat_Storm" }
+    ]
+  }
+}
+
+{
+  "質問": "チャールストンで1998年に発生したハリケーンは何ですか？",
+  "参考情報": "チャールストンの最も著名なハリケーンの1つは1989年9月21日に発生したハリケーン・ヒューゴです。このカテゴリー4の嵐は市内に大きな影響を与えました。1998年に発生したハリケーンは記録されていません。",
+  "誤答候補": "ハリケーン・ヒューゴ",
+  "答え": "<p><strong>1998年にチャールストンで発生したハリケーンは<strong>記録されていません</strong>。⚠️</p><p><strong>理由</strong>: 1998年に特定のハリケーンが記録されていないためです。📄</p><p><strong>なぜ1998年にハリケーンが発生しなかったのか？</strong>: 1998年は特定の影響を与えるハリケーンが発生しませんでした。✅</p>",
+  "グラフ情報": {
+    "ノード": [
+      { "id": "Hurricane_Hugo", "label": "Hurricane", "name": "ハリケーン・ヒューゴ" },
+      { "id": "Year_1998", "label": "Year", "name": "1998年" }
+    ],
+    "関係": [
+      { "source": "Year_1998", "relation": "had_no_hurricane_in", "target": "Hurricane_Hugo" }
+    ]
+  }
+}
+
+{
+  "質問": "チャールストンの市内で記録された最も高い温度は何度ですか？",
+  "参考情報": "チャールストンの市内で記録された最も高い温度は、1985年6月2日と1944年6月24日に104°F（40°C）でした。空港では公式記録が保持されており、1999年8月1日に105°F（41°C）に達したことがあります。",
+  "誤答候補": "7°F（−14°C）",
+  "答え": "<p><strong>チャールストンの市内で記録された最も高い温度は<strong>104°F（40°C）</strong>です。🌞</p><p><strong>理由</strong>: 104°F（40°C）は1985年6月2日と1944年6月24日に記録され、最も高い気温となっています。📄</p><p><strong>なぜ104°Fだったのか？</strong>: これがチャールストンで記録された最も高い気温です。✅</p>",
+  "グラフ情報": {
+    "ノード": [
+      { "id": "Charleston_High_Temperature", "label": "Temperature", "name": "104°F（40°C）" },
+      { "id": "City_Charleston", "label": "City", "name": "チャールストン" }
+    ],
+    "関係": [
+      { "source": "City_Charleston", "relation": "has_highest_temperature_of", "target": "Charleston_High_Temperature" }
+    ]
+  }
+}
+
+{
+  "質問": "チャールストンの空港で1999年8月1日に記録された最も暖かい日付はいつですか？",
+  "参考情報": "チャールストンの空港では、1999年8月1日に記録的な105°F（41°C）が記録されました。この日が空港での最も暖かい日とされています。",
+  "誤答候補": "1985年1月21日",
+  "答え": "<p><strong>チャールストンの空港で1999年8月1日に記録された最も暖かい日付は<strong>1999年8月1日</strong>です。🌡️</p><p><strong>理由</strong>: 1999年8月1日が空港で最も高い気温が記録された日です。📄</p><p><strong>なぜ1999年8月1日なのか？</strong>: 空港で最も高い気温の記録として残っているからです。✅</p>",
+  "グラフ情報": {
+    "ノード": [
+      { "id": "Date_1999_08_01", "label": "Date", "name": "1999年8月1日" },
+      { "id": "Charleston_Airport", "label": "Location", "name": "チャールストン空港" }
+    ],
+    "関係": [
+      { "source": "Charleston_Airport", "relation": "recorded_highest_temperature_on", "target": "Date_1999_08_01" }
+    ]
+  }
+}
+
 """
-clipboard_data = "\n".join([line for line in data.split("\n") if line.strip()])
+temp_lines = clipboard_data.strip().splitlines()
+
+if len(temp_lines) > 10:
+    clipboard_data = clipboard_data.strip().replace("\n},\n{", "\n}\n\n{")
+    clipboard_data = clipboard_data.strip().split("\n\n")
+    clipboard_data = [json.loads(obj) for obj in clipboard_data]
+
+    clipboard_data = [json.dumps(obj, ensure_ascii=False) for obj in clipboard_data]
+
+    clipboard_data = "\n".join(clipboard_data)
+else:
+    clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
+    clipboard_data = [
+        line
+        for line in clipboard_data.strip().splitlines()
+        if line not in ["", "}", ",", "},"]
+    ]
+    clipboard_data = [
+        (
+            line.strip() + ("}" if line.strip().endswith("}]}") else "")
+            if not line.endswith("}]}}")
+            else line
+        )
+        for line in clipboard_data
+    ]
+    clipboard_data = [(line.replace("}]}},", "}]}}")) for line in clipboard_data]
+    clipboard_data = "\n".join(clipboard_data)
+
 clipboard_data += "\n"
+print(clipboard_data)
+
 lines = clipboard_data.strip().splitlines()
 
 print(is_jsonl(lines))
