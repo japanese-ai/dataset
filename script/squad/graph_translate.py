@@ -217,22 +217,34 @@ def append_data(filename, retry, index=0):
     for y_cor in y_cors:
         copy(y_cor)
         clipboard_data = pyperclip.paste()
-        clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
-        clipboard_data = [
-            line
-            for line in clipboard_data.strip().splitlines()
-            if line not in ["", "}", ",", "},"]
-        ]
-        clipboard_data = [
-            (
-                line.strip() + ("}" if line.strip().endswith("}]}") else "")
-                if not line.endswith("}]}}")
-                else line
+        temp_lines = clipboard_data.strip().splitlines()
+
+        if len(temp_lines) > 10:
+            clipboard_data = clipboard_data.strip().split("\n\n")
+
+            clipboard_data = [json.loads(obj) for obj in clipboard_data]
+
+            clipboard_data = "\n".join(
+                json.dumps(obj, ensure_ascii=False) for obj in clipboard_data
             )
-            for line in clipboard_data
-        ]
-        clipboard_data = [(line.replace("}]}},", "}]}}")) for line in clipboard_data]
-        clipboard_data = "\n".join(clipboard_data)
+        else:
+            clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
+            clipboard_data = [
+                line
+                for line in clipboard_data.strip().splitlines()
+                if line not in ["", "}", ",", "},"]
+            ]
+            clipboard_data = [
+                (
+                    line.strip() + ("}" if line.strip().endswith("}]}") else "")
+                    if not line.endswith("}]}}")
+                    else line
+                )
+                for line in clipboard_data
+            ]
+            clipboard_data = [(line.replace("}]}},", "}]}}")) for line in clipboard_data]
+            clipboard_data = "\n".join(clipboard_data)
+
         clipboard_data += "\n"
 
         lines = clipboard_data.strip().splitlines()
@@ -279,7 +291,7 @@ destination_folder = "temp/"
 
 
 last = 4341
-start = 4608
+start = 4694
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:]
 error_count = 0
