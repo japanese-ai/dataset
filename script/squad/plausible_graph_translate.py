@@ -86,13 +86,13 @@ def fill_first(is_first):
     # pyautogui.click()
     # time.sleep(10)
 
-    pyautogui.moveTo(180, 170, duration=0.5)
+    pyautogui.moveTo(180, 180, duration=0.5)
     if is_first:
         pyautogui.click()
     pyautogui.click()
     time.sleep(10)
 
-    pyautogui.moveTo(180, 320, duration=0.5)
+    pyautogui.moveTo(180, 360, duration=0.5)
     pyautogui.click()
     time.sleep(10)
 
@@ -128,7 +128,7 @@ def fill_file(filename, index=0):
             content = content[:5]
         elif index == 2:
             content = content[5:]
-        data = f'"""\n{content}\n"""\nこのデータセット({filename}_{index})を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、グラフ情報を必ず参照して、HTMLと絵文字を含むCoT形式の回答を生成してください。グラフ情報は必ず含め、誤答候補も出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。\n※答えにCoT形式をもっと詳しく入れて欲しい\n※答えにもっと絵文字を入れて欲しい\n※ノードの「name」を日本語に翻訳して欲しい\n※誤答候補は配列で出力しちゃダメ'
+        data = f'"""\n{content}\n"""\nこのデータセット({filename}_{index})を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、グラフ情報を必ず参照して、HTMLと絵文字を含むCoT形式の回答を生成してください。グラフ情報は必ず含め、誤答候補も出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。\n※誤答候補は配列で出力しちゃダメ\n※答えにCoT形式をもっと詳しく入れて欲しい\n※答えにもっと絵文字を入れて欲しい\nグラフ情報は例の情報にならないように\n※ノードの「name」を日本語に翻訳して欲しい\n※関係のデータを忘れずに'
         pyperclip.copy(data)
         pyautogui.hotkey("command", "v")
 
@@ -156,6 +156,8 @@ def is_valid_graph_info(graph_info):
             return False
 
     if not isinstance(graph_info["関係"], list):
+        return False
+    if len(graph_info["関係"]) == 0:
         return False
     for relation in graph_info["関係"]:
         if not isinstance(relation, dict):
@@ -202,6 +204,22 @@ def is_jsonl(lines):
         except json.JSONDecodeError:
             return False
     return True
+
+
+def replace_with_fallback(data):
+    patterns = [(r"\n},\n{", "\n}\n\n{"), (r"\n}\n{", "\n}\n\n{")]
+    for pattern, replacement in patterns:
+        match = re.search(pattern, data, re.MULTILINE)
+        if match:
+            data = re.sub(pattern, replacement, data, flags=re.MULTILINE)
+            break
+
+    return data
+
+
+examples_data = example_data = [
+    '"グラフ情報":{"ノード":[{"id":"Visa_Student","label":"VisaType","name":"学生ビザ"},{"id":"Doc_CoE","label":"Document","name":"証明書"}],"関係":[{"source":"Visa_Student","relation":"requires_document","target":"Doc_CoE"}]}'
+]
 
 
 def append_data(filename, retry, index=0):
@@ -255,19 +273,20 @@ def append_data(filename, retry, index=0):
     for y_cor in y_cors:
         copy(y_cor)
         clipboard_data = pyperclip.paste()
+        clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
         temp_lines = clipboard_data.strip().splitlines()
 
         if len(temp_lines) > 10:
-            clipboard_data = clipboard_data.strip().replace("\n},\n{", "\n}\n\n{")
+            clipboard_data = replace_with_fallback(clipboard_data)
             clipboard_data = clipboard_data.strip().split("\n\n")
-
             clipboard_data = [json.loads(obj) for obj in clipboard_data]
 
-            clipboard_data = "\n".join(
+            clipboard_data = [
                 json.dumps(obj, ensure_ascii=False) for obj in clipboard_data
-            )
+            ]
+
+            clipboard_data = "\n".join(clipboard_data)
         else:
-            clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
             clipboard_data = [
                 line
                 for line in clipboard_data.strip().splitlines()
@@ -287,6 +306,10 @@ def append_data(filename, retry, index=0):
             clipboard_data = "\n".join(clipboard_data)
 
         clipboard_data += "\n"
+
+        if any(item in clipboard_data for item in example_data):
+            num_rows = 0
+            break
 
         lines = clipboard_data.strip().splitlines()
         num_rows = len(lines)
@@ -332,7 +355,7 @@ destination_folder = "temp/"
 
 
 last = 2174
-start = 3576
+start = 4314
 files = os.listdir(source_folder)
 files = sorted(files, key=extract_number)[start:]
 is_first = True
@@ -366,7 +389,7 @@ for filename in files:
     is_first = False
 
     count += 1
-    if count >= 20:
+    if count >= 15:
         count = 0
         time.sleep(300)
 

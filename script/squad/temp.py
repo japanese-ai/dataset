@@ -70,79 +70,14 @@ def is_jsonl(lines):
 
 
 clipboard_data = """
-{
-  "質問": "なぜPhoto CDはすべてのコンピュータで動作しないのですか？",
-  "参考情報": "Photo CDはKodakによって設計され、高品質の画像をCDにデジタル化して保存するシステムです。このシステムでは、専用のKodak機器を使用して画像を印刷することもできます。",
-  "誤答候補": "特別なKodak機器",
-  "答え": "<p>Photo CDは、<strong>特別なKodak機器</strong>が必要なため、すべてのコンピュータで動作しません。📄 ✅</p><ul><li>Photo CDは専用のソフトウェアやハードウェアで再生できます。</li><li>これにより、画像を印刷したり、高画質で閲覧したりできます。</li><li>そのため、一般的なコンピュータでは再生できません。</li></ul><p>まとめ：Photo CDは、<strong>特別なKodak機器</strong>が必要です。✅</p>",
-  "グラフ情報": {
-    "ノード": [
-      { "id": "Photo_CD", "label": "Photo CD", "name": "Photo CD" },
-      { "id": "Kodak_Machine", "label": "Kodak機器", "name": "Kodak機器" }
-    ],
-    "関係": [
-      { "source": "Photo_CD", "relation": "requires", "target": "Kodak_Machine" }
-    ]
-  }
-}
-{
-  "質問": "Kodak Picture CDはいつ発売されましたか？",
-  "参考情報": "Photo CDはKodakによって設計され、高品質の画像をCDにデジタル化して保存するシステムです。Kodak Picture CDは、消費者向けのCD-ROM形式の製品です。",
-  "誤答候補": "1992年",
-  "答え": "<p>Kodak Picture CDは<strong>1992年</strong>に発売されました。📄 ✅</p><ul><li>Kodak Picture CDは、消費者向けのCD-ROM形式の製品です。</li><li>これは、普通のコンピュータで再生でき、写真を保存する目的で設計されました。</li><li>Photo CDは高品質の画像を保存するシステムであり、別の製品です。</li></ul><p>まとめ：Kodak Picture CDは<strong>1992年</strong>に発売されました。✅</p>",
-  "グラフ情報": {
-    "ノード": [
-      { "id": "Kodak_Picture_CD", "label": "Kodak Picture CD", "name": "Kodak Picture CD" }
-    ],
-    "関係": [
-      { "source": "Kodak_Picture_CD", "relation": "released_in", "target": "1992" }
-    ]
-  }
-}
-{
-  "質問": "Red Bookの「アンチコピー」サブコードはいつ書かれたのですか？",
-  "参考情報": "Red Bookオーディオ仕様は、サブコード内に簡単な「アンチコピー」声明を含んでいますが、コピー保護機構は含まれていません。2001年頃から、レコード会社は「コピー保護された」非標準コンパクトディスクを市場に出そうとしました。",
-  "誤答候補": "2001年",
-  "答え": "<p>Red Bookの「アンチコピー」サブコードは<strong>2001年</strong>に書かれました。📄 ✅</p><ul><li>コピー保護されたディスクは、Red Book仕様に違反しているため、Compact Disc Digital Audioロゴを付けることはできません。</li><li>コピー保護されたディスクの多くは、コンピュータのCD-ROMドライブや一部のCDプレーヤーで再生できません。</li><li>これらのコピー保護技術に対抗するため、無料のソフトウェアが利用可能です。</li></ul><p>まとめ：Red Bookの「アンチコピー」サブコードは<strong>2001年</strong>に書かれました。✅</p>",
-  "グラフ情報": {
-    "ノード": [
-      { "id": "Anti_Copy_Subcode", "label": "アンチコピーサブコード", "name": "アンチコピーサブコード" }
-    ],
-    "関係": [
-      { "source": "Anti_Copy_Subcode", "relation": "written_in", "target": "2001" }
-    ]
-  }
-}
-{
-  "質問": "コピー保護システムソフトウェアを作成したのは誰ですか？",
-  "参考情報": "Red Bookオーディオ仕様は、サブコード内に簡単な「アンチコピー」声明を含んでいます。これにより、コピー保護されたディスクが作成されました。これらのディスクは、コンピュータやCDプレーヤーで再生できない場合があります。",
-  "誤答候補": "Philips",
-  "答え": "<p>コピー保護システムソフトウェアは<strong>Philips</strong>によって作成されました。📄 ✅</p><ul><li>Philipsは、Red Book仕様に従って、コピー保護システムを開発しました。</li><li>これにより、コピー防止の技術が搭載されました。</li><li>多くのフリーソフトウェアがこれらの保護技術に対抗しています。</li></ul><p>まとめ：コピー保護システムソフトウェアは<strong>Philips</strong>によって作成されました。✅</p>",
-  "グラフ情報": {
-    "ノード": [
-      { "id": "Anti_Copy_Software", "label": "コピー保護システムソフトウェア", "name": "コピー保護システムソフトウェア" }
-    ],
-    "関係": [
-      { "source": "Anti_Copy_Software", "relation": "created_by", "target": "Philips" }
-    ]
-  }
-}
-{
-  "質問": "Compact Disc Digital Audioロゴはいつ著作権が取得されたのですか？",
-  "参考情報": "Red Bookオーディオ仕様は、サブコード内に簡単な「アンチコピー」声明を含んでいます。これにより、コピー保護されたディスクが作成されました。多くのコピー保護されたディスクは、コンピュータやCDプレーヤーで再生できません。",
-  "誤答候補": "2001年",
-  "答え": "<p>Compact Disc Digital Audioロゴは<strong>2001年</strong>に著作権が取得されました。📄 ✅</p><ul><li>このロゴは、Red Book仕様に従って、コピー保護されたディスクを認識するために使用されます。</li><li>このロゴを付けることで、コピー保護されたディスクが標準仕様に従っていることが確認されます。</li><li>著作権は、コピー保護技術と関連しています。</li></ul><p>まとめ：Compact Disc Digital Audioロゴは<strong>2001年</strong>に著作権が取得されました。✅</p>",
-  "グラフ情報": {
-    "ノード": [
-      { "id": "CD_Digital_Audio_Logo", "label": "CD Digital Audioロゴ", "name": "CD Digital Audioロゴ" }
-    ],
-    "関係": [
-      { "source": "CD_Digital_Audio_Logo", "relation": "copyrighted_in", "target": "2001" }
-    ]
-  }
-}
+{"質問":"血中コレステロールは何に大きな影響を与えますか？","参考情報":"文中では『食事性コレステロールは血中コレステロールに有意な影響を与えない』とされており、逆の関係を示唆する記述はない。","誤答候補":"食事性コレステロール","答え":"<p>🧪 <strong>ステップ1:</strong> 質問は「血中コレステロールは何に大きな影響を与えますか？」です。</p>\n<p>📄 <strong>ステップ2:</strong> 文中には「食事性コレステロールは血中コレステロールに有意な影響を与えない」と明記されています。</p>\n<p>🔄 <strong>ステップ3:</strong> この関係は片方向であり、血中コレステロールが食事性コレステロールに影響を与えるとは述べられていません。</p>\n<p>❌ <strong>誤答:</strong> 『食事性コレステロール』は影響を受ける側であり、与える側ではないため誤答です。</p>\n<p>✅ まとめ：血中コレステロールは<strong>食事性コレステロールに影響を与えるとはされていません</strong>。因果関係を逆に捉えないよう注意しましょう。📉🚫</p>","グラフ情報":{"ノード":[{"id":"Biomarker_BloodCholesterol","label":"Biomarker","name":"血中コレステロール"},{"id":"Substance_DietaryCholesterol","label":"Substance","name":"食事性コレステロール"}],"関係":[{"source":"Substance_DietaryCholesterol","relation":"not_significantly_affects","target":"Biomarker_BloodCholesterol"}]}}
+{"質問":"どのタイプのコレステロールが注意深い制限を必要としますか？","参考情報":"文中では『食事性コレステロールは血中コレステロールに大きな影響を与えないため、制限の推奨は必要ないかもしれない』と記述されている。","誤答候補":"食事性","答え":"<p>🧂 <strong>ステップ1:</strong> 質問は「どのタイプのコレステロールが注意深い制限を必要としますか？」です。</p>\n<p>📄 <strong>ステップ2:</strong> 文中では、食事性コレステロールは血中コレステロールに大きな影響を与えないため、「その摂取に関する推奨は不要かもしれない」と述べられています。</p>\n<p>❌ <strong>誤答:</strong> 『食事性』は制限を必要としない可能性が高いため、誤答です。</p>\n<p>✅ まとめ：現在の知見では、<strong>食事性コレステロールは制限対象とは考えにくい</strong>です。🍳🔍</p>","グラフ情報":{"ノード":[{"id":"Substance_DietaryCholesterol","label":"Substance","name":"食事性コレステロール"},{"id":"Status_Restriction","label":"Status","name":"制限の必要性"}],"関係":[{"source":"Substance_DietaryCholesterol","relation":"does_not_require","target":"Status_Restriction"}]}}
+{"質問":"トランス〇〇はリスクを低下させますか？","参考情報":"文中で『トランス脂肪はリスクを増加させるようである』と明記されており、リスク低下とは逆の効果である。","誤答候補":"脂肪","答え":"<p>⚠️ <strong>ステップ1:</strong> 質問は「トランス〇〇はリスクを低下させますか？」です。</p>\n<p>📄 <strong>ステップ2:</strong> 文中では『トランス脂肪はリスクを<strong>増加させる</strong>ようである』と明確に述べられています。</p>\n<p>❌ <strong>誤答:</strong> 『脂肪』は文中ではリスクを高めるとされており、リスク低下とは逆の効果です。</p>\n<p>✅ まとめ：トランス脂肪は<strong>健康リスクを増大させる</strong>ため、リスク低下に寄与するという主張は誤りです。🚫🍟</p>","グラフ情報":{"ノード":[{"id":"Substance_TransFat","label":"Substance","name":"トランス脂肪"},{"id":"Effect_HealthRisk","label":"Effect","name":"健康リスク"}],"関係":[{"source":"Substance_TransFat","relation":"increases","target":"Effect_HealthRisk"}]}}
+{"質問":"心筋梗塞のリスクを減らすことが示されている遺伝子変異はいくつありますか？","参考情報":"文中では27の遺伝子変異が『リスクを増加させる』と述べられており、リスクを減らすものではない。","誤答候補":"27個","答え":"<p>🧬 <strong>ステップ1:</strong> 質問は「心筋梗塞のリスクを減らすことが示されている遺伝子変異はいくつありますか？」です。</p>\n<p>📄 <strong>ステップ2:</strong> 文中では「27の遺伝子変異が心筋梗塞（MI）のリスクを<strong>増加</strong>させる」とあります。</p>\n<p>❌ <strong>誤答:</strong> 『27個』はリスクを<strong>減らす</strong>のではなく<strong>増やす</strong>ものであり、誤った理解です。</p>\n<p>✅ まとめ：27の遺伝子変異は<strong>リスク増加</strong>に関連しており、リスク低下とは無関係です。⚠️📉</p>","グラフ情報":{"ノード":[{"id":"Disease_MI","label":"Disease","name":"心筋梗塞"},{"id":"GeneticVariant_27","label":"GeneticVariantGroup","name":"27個の遺伝子変異"},{"id":"Effect_IncreaseRisk","label":"Effect","name":"リスク増加"}],"関係":[{"source":"GeneticVariant_27","relation":"associated_with","target":"Effect_IncreaseRisk"},{"source":"Effect_IncreaseRisk","relation":"targets","target":"Disease_MI"}]}}
+{"質問":"PCSK9はどの遺伝子座にありますか？","参考情報":"文中では『心筋梗塞との最も強い関連は9p21遺伝子座にある』とされているが、PCSK9がそこに含まれるとは書かれていない。他の遺伝子名の1つとして挙げられているだけである。","誤答候補":"9p21","答え":"<p>🧬 <strong>ステップ1:</strong> 質問は「PCSK9はどの遺伝子座にありますか？」です。</p>\n<p>📄 <strong>ステップ2:</strong> 文中で「最も強い関連があるのは9p21遺伝子座」としつつも、<strong>PCSK9がその中にあるとは明記されていません</strong>。</p>\n<p>❌ <strong>誤答:</strong> 『9p21』はCDKN2A・2Bの遺伝子座であり、PCSK9についての記載は他の場所にある可能性があります。</p>\n<p>✅ まとめ：PCSK9が9p21遺伝子座に属するという明確な記述はなく、断定は誤りです。🔍🚫</p>","グラフ情報":{"ノード":[{"id":"Gene_PCSK9","label":"Gene","name":"PCSK9"},{"id":"Locus_9p21","label":"Locus","name":"9p21遺伝子座"}],"関係":[{"source":"Gene_PCSK9","relation":"not_located_in","target":"Locus_9p21"}]}}
 
 """
+clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
 temp_lines = clipboard_data.strip().splitlines()
 
 patterns = [(r"\n},\n{", "\n}\n\n{"), (r"\n}\n{", "\n}\n\n{")]
@@ -158,7 +93,7 @@ def replace_with_fallback(data):
     return data
 
 
-if len(temp_lines) > 10:
+if len(temp_lines) > 20:
     clipboard_data = replace_with_fallback(clipboard_data)
     clipboard_data = clipboard_data.strip().split("\n\n")
     clipboard_data = [json.loads(obj) for obj in clipboard_data]
@@ -167,7 +102,6 @@ if len(temp_lines) > 10:
 
     clipboard_data = "\n".join(clipboard_data)
 else:
-    clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
     clipboard_data = [
         line
         for line in clipboard_data.strip().splitlines()
