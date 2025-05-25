@@ -4,6 +4,7 @@ import re
 import time
 from abc import ABC, abstractmethod
 
+import emoji
 import pyautogui
 import pyperclip
 
@@ -87,6 +88,20 @@ class ChatGptUI(ABC):
     def is_valid_format(self, obj):
         pass
 
+    def extract_emojis(self, text):
+        return [char for char in text if char in emoji.EMOJI_DATA]
+
+    def has_only_one_unique_emoji(self, text):
+        emojis = self.extract_emojis(text)
+        return len(emojis) == 1
+
+    def has_duplicate_emojis(self, text):
+        emojis = self.extract_emojis(text)
+        return len(emojis) > 1 and len(set(emojis)) == 1
+
+    def has_html_tags(self, text):
+        return bool(re.search(r"<[^>]+>", text))
+
     def is_jsonl(self, lines):
         for i, line in enumerate(lines, 1):
             line = line.strip()
@@ -94,7 +109,12 @@ class ChatGptUI(ABC):
                 continue
             try:
                 obj = json.loads(line)
-                if not self.is_valid_format(obj):
+                if (
+                    not self.is_valid_format(obj)
+                    or self.has_only_one_unique_emoji(obj.get("答え"))
+                    or self.has_duplicate_emojis(obj.get("答え"))
+                    or not self.has_html_tags(obj.get("答え"))
+                ):
                     print(f"Invalid format in line {i}: {line}")
                     return False
             except json.JSONDecodeError:
