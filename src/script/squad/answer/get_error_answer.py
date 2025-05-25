@@ -88,10 +88,13 @@ def get_clipboard_data(clipboard_data):
         ]
         clipboard_data = [(line.replace("}]}},", "}]}}")) for line in clipboard_data]
 
-    clipboard_data = [json.loads(obj) for obj in clipboard_data]
-    clipboard_data = [json.dumps(obj, ensure_ascii=False) for obj in clipboard_data]
-    clipboard_data = "\n".join(clipboard_data)
-    clipboard_data += "\n"
+    try:
+        clipboard_data = [json.loads(obj) for obj in clipboard_data]
+        clipboard_data = [json.dumps(obj, ensure_ascii=False) for obj in clipboard_data]
+        clipboard_data = "\n".join(clipboard_data)
+        clipboard_data += "\n"
+    except Exception:
+        return False, 0, None, None
 
     if any(item in clipboard_data for item in example_data):
         return True, 0, None, None
@@ -180,7 +183,7 @@ def append_data(batch, batch_no_list):
 
     is_appended = True
     if num_rows != 5 or is_jsonl(lines, batch_no_list) is False:
-        clipboard_data = f"Error: {batch_no_list}"
+        clipboard_data = f"Error: {batch_no_list}\n\n\n\n\n"
         is_appended = False
 
     with open(output_file, "a", encoding="utf-8") as f:
@@ -196,7 +199,7 @@ output_file = "data/squad/plausible_translated_answer_fixed.jsonl"
 with open(input_file, "r", encoding="utf-8") as f:
     data_list = [json.loads(line) for line in f]
 
-start = 0
+start = 860
 count = 1
 error_count = 0
 data_list = data_list[start:]
@@ -225,7 +228,7 @@ for i in range(0, len(data_list), batch_size):
     is_first = False
 
     count += 1
-    if count > 15:
+    if count > 30:
         count = 0
         time.sleep(300)
 
