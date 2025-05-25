@@ -23,11 +23,17 @@ def has_html_tags(text):
 
 
 def has_japanese(text):
+    # Match Japanese characters
     japanese_pattern = re.compile(
-        "[\u3040-\u30ff\u4e00-\u9fff\u30a0-\u30ff\uff66-\uff9f]"
+        r"[\u3040-\u30ff\u4e00-\u9fff\u30a0-\u30ff\uff66-\uff9f]"
     )
 
-    return re.search(japanese_pattern, text)
+    # Match a number followed by % (e.g., 2.5%, 100%, 0%)
+    percentage_pattern = re.compile(r"\b\d+(\.\d+)?%")
+
+    return bool(
+        re.search(japanese_pattern, text) or re.search(percentage_pattern, text)
+    )
 
 
 def is_valid_graph_info(graph_info):

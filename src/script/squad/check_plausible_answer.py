@@ -1,12 +1,38 @@
 from script.squad.plausible_answer import PlausibleAnswer
 
 check_data = """
-{"no": 5536, "質問": "ウィークリー・カンサンが利用できる2つのメディア形態は何ですか？", "参考情報": "プリント（print）とオンライン（online）と記載。", "誤答候補": "プリントとオンライン", "答え": "<p>😊 <strong>ステップ1:</strong> 質問では「ウィークリー・カンサンが利用できるメディア形態」が問われています。</p><p>📄 <strong>ステップ2:</strong> 文中に「print and online publications」と明記されています。</p><p>✅ <strong>ステップ3:</strong> これにより、利用可能なメディア形態は「プリント」と「オンライン」であると明確にわかります。</p><p>❌ <strong>誤答候補の検討:</strong> 一見正しく見えるが、検証のプロセスなしに選ぶと根拠に欠けます。今回は文中で直接確認できるため正答です。</p><p>✅ <strong>正しい答え:</strong> プリントとオンライン</p><p>まとめ：文中に両形態が明示されており、妥当な正答です。✅</p>", "グラフ情報": {"ノード": [{"id": "Media_WeeklyKansan", "label": "Media", "name": "ウィークリー・カンサン"}, {"id": "Format_Print", "label": "Format", "name": "プリント"}, {"id": "Format_Online", "label": "Format", "name": "オンライン"}], "関係": [{"source": "Media_WeeklyKansan", "relation": "available_in", "target": "Format_Print"}, {"source": "Media_WeeklyKansan", "relation": "available_in", "target": "Format_Online"}]}}
-{"no": 5537, "質問": "デイリー・カンサンが所属していない機関はどこですか？", "参考情報": "ウィリアム・アレン・ホワイト・ジャーナリズムスクール（William Allen White School of Journalism）と記載。所属していないと明記。", "誤答候補": "ウィリアム・アレン・ホワイト・ジャーナリズムスクール", "答え": "<p>😊 <strong>ステップ1:</strong> 質問は「デイリー・カンサンが所属していない機関」を問うています。</p><p>📄 <strong>ステップ2:</strong> 文中に「operates outside of the university's William Allen White School of Journalism」とあり、デイリー・カンサンはこの機関に所属していないことが明言されています。</p><p>✅ <strong>ステップ3:</strong> よって、正しい答えは「ウィリアム・アレン・ホワイト・ジャーナリズムスクール」です。</p><p>❌ <strong>誤答候補の検討:</strong> この選択肢は実際に文中で所属していないとされており、正答として認められるべきです。</p><p>✅ <strong>正しい答え:</strong> ウィリアム・アレン・ホワイト・ジャーナリズムスクール</p><p>まとめ：明確に記述された否定的所属情報に基づいており、正確な解答です。✅</p>", "グラフ情報": {"ノード": [{"id": "Media_DailyKansan", "label": "Media", "name": "デイリー・カンサン"}, {"id": "School_Journalism", "label": "Organization", "name": "ウィリアム・アレン・ホワイト・ジャーナリズムスクール"}], "関係": [{"source": "Media_DailyKansan", "relation": "not_affiliated_with", "target": "School_Journalism"}]}}
-{"no": 5540, "質問": "KUのNPR系列局のコールサインは何ですか？", "参考情報": "KANUと記載。", "誤答候補": "KANU", "答え": "<p>😊 <strong>ステップ1:</strong> 質問では「NPR系列局のコールサイン」が問われています。</p><p>📄 <strong>ステップ2:</strong> 文中に「KANU, the NPR-affiliated radio station」と明記されています。</p><p>✅ <strong>ステップ3:</strong> よって、NPR系列のコールサインは「KANU」です。</p><p>❌ <strong>誤答候補の検討:</strong> 「KANU」は正しく見えるが、文脈からの検証がなければ根拠が示せません。今回は明記されているため正答です。</p><p>✅ <strong>正しい答え:</strong> KANU</p><p>まとめ：明示的に記された情報に基づいており、正確です。✅</p>", "グラフ情報": {"ノード": [{"id": "Station_KANU", "label": "RadioStation", "name": "KANU"}, {"id": "Affiliation_NPR", "label": "Organization", "name": "NPR"}], "関係": [{"source": "Station_KANU", "relation": "affiliated_with", "target": "Affiliation_NPR"}]}}
-{"no": 5542, "質問": "KUにある独立系ラジオ局の名前は？", "参考情報": "KUJH-LPと記載。", "誤答候補": "KUJH-LP", "答え": "<p>😊 <strong>ステップ1:</strong> 質問は「独立系ラジオ局の名称」を問うています。</p><p>📄 <strong>ステップ2:</strong> 文中には「KUJH-LP, an independent station」と明記されており、KUJH-LPが該当することが明確です。</p><p>✅ <strong>ステップ3:</strong> よって、正しい答えは「KUJH-LP」です。</p><p>❌ <strong>誤答候補の検討:</strong> 正しく見えますが、文中からの根拠を明示してこそ正答と判断できます。今回は文中に記載あり。</p><p>✅ <strong>正しい答え:</strong> KUJH-LP</p><p>まとめ：独立局として明記されているため、根拠ある正答です。✅</p>", "グラフ情報": {"ノード": [{"id": "Station_KUJHLP", "label": "RadioStation", "name": "KUJH-LP"}, {"id": "Attribute_Independent", "label": "Attribute", "name": "独立系"}], "関係": [{"source": "Station_KUJHLP", "relation": "has_attribute", "target": "Attribute_Independent"}]}}
-{"no": 5548, "質問": "KUの書店や食堂から資金提供を受ける可能性があるのは誰ですか？", "参考情報": "学生組合活動（Student Union Activities）と記載。", "誤答候補": "Student Union Activities", "答え": "<p>😊 <strong>ステップ1:</strong> 質問では「誰が資金提供を受けるか」が問われています。</p><p>📄 <strong>ステップ2:</strong> 文中に「proceeds going back to support student programs, such as Student Union Activities」とあり、Student Union Activities が支援対象であることが明示されています。</p><p>✅ <strong>ステップ3:</strong> よって、資金提供を受ける可能性があるのは「Student Union Activities」です。</p><p>❌ <strong>誤答候補の検討:</strong> 選択肢として正しいが、裏付けなしでは判断できません。今回は明確な記述があるため正答。</p><p>✅ <strong>正しい答え:</strong> Student Union Activities</p><p>まとめ：文中に資金提供の対象として具体的に示されており、正答です。✅</p>", "グラフ情報": {"ノード": [{"id": "FundingSource_KUStores", "label": "Entity", "name": "KUの書店や食堂"}, {"id": "Program_SUA", "label": "Program", "name": "Student Union Activities"}], "関係": [{"source": "FundingSource_KUStores", "relation": "funds", "target": "Program_SUA"}]}}
-
+{"no":13134,"質問":"1970年に何が起きましたか？","参考情報":"1970年の出来事に関する情報は文中に存在せず、1973年以降の情報のみが記載されている。","誤答候補":"1973年から2015年にかけて、156人の死刑囚が釈放、恩赦、または減刑された。","答え":"<p>📄 本文には<strong>1970年</strong>に関する記述がありません。</p><p>😊 ステップ1：提供された情報を確認すると、記述の範囲は<strong>1973年から2015年</strong>に限定されています。</p><p>⚠️ ステップ2：誤答候補「1973年から2015年にかけての死刑囚釈放などの事例」は、1970年以前には該当せず、設問の年とは無関係です。</p><p>❌ 理由：1970年の情報を問う設問に対し、誤答候補は記載期間外の内容であり、本文中でサポートされていません。</p><p>✅ まとめ：1970年については本文中に記載がないため、該当する出来事は不明です。</p>","グラフ情報":{"ノード":[
+  {"id":"Time_1973_2015","label":"Period","name":"1973年から2015年"},
+  {"id":"Event_156Released","label":"Event","name":"156人の釈放・恩赦・減刑"}
+],"関係":[
+  {"source":"Time_1973_2015","relation":"includes_event","target":"Event_156Released"}
+]}}
+{"no":13135,"質問":"この統計を支持しているのは誰ですか？","参考情報":"死刑反対派はこの統計が誤審による死刑執行の危険性を示していると主張している。","誤答候補":"死刑反対派","答え":"<p>📄 本文によると、<strong>死刑反対派</strong>がこの統計を使って誤審の危険性を主張しています。</p><p>😊 ステップ1：この統計は、156人の釈放などのデータに基づいて、冤罪の可能性を示唆しています。</p><p>⚠️ ステップ2：ただし、「誰が支持しているか」については、死刑反対派以外の意見や視点（例：賛成派）も含まれている可能性が示唆されているため、死刑反対派のみを挙げるのは不完全です。</p><p>❌ 理由：誤答候補は部分的には正しいですが、文中の全体像を反映しておらず限定的な回答になっています。</p><p>✅ まとめ：死刑反対派は統計を支持していますが、他の立場も存在するため、単一の支持者のみを挙げるのは不正確です。</p>","グラフ情報":{"ノード":[
+  {"id":"Group_Abolitionists","label":"Group","name":"死刑反対派"},
+  {"id":"Stat_156Released","label":"Statistic","name":"156人の釈放統計"}
+],"関係":[
+  {"source":"Group_Abolitionists","relation":"supports_statistic","target":"Stat_156Released"}
+]}}
+{"no":13136,"質問":"アメリカで殺人犯の何パーセントが死刑判決を受けていませんか？","参考情報":"全米で2.5%の殺人犯が死刑判決を受けているため、97.5%は受けていない。","誤答候補":"2.5%","答え":"<p>📄 本文によると、<strong>2.5%</strong>の殺人犯が死刑判決を受けており、残りの<strong>97.5%</strong>は受けていないと解釈されます。</p><p>😊 ステップ1：設問は「死刑判決を受けていない」割合を尋ねています。</p><p>⚠️ ステップ2：誤答候補「2.5%」は実際には「受けた」側のデータであり、設問とは逆の意味です。</p><p>❌ 理由：設問の趣旨に反して、誤答候補は真逆の情報を示しています。</p><p>✅ まとめ：97.5%の殺人犯は死刑判決を受けていないというのが正しい答えです。</p>","グラフ情報":{"ノード":[
+  {"id":"Crime_Murder","label":"Crime","name":"殺人"},
+  {"id":"Stat_2.5PercentDeath","label":"Statistic","name":"2.5%が死刑判決を受ける"}
+],"関係":[
+  {"source":"Crime_Murder","relation":"statistic","target":"Stat_2.5PercentDeath"}
+]}}
+{"no":13137,"質問":"ネバダ州では何パーセントの殺人犯が死刑判決を受けていませんか？","参考情報":"ネバダ州では6%の殺人犯が死刑判決を受けている。","誤答候補":"6%","答え":"<p>📄 本文には<strong>ネバダ州</strong>における殺人犯のうち、<strong>6%</strong>が死刑判決を受けたとあります。</p><p>😊 ステップ1：設問では「死刑判決を受けていない割合」が問われており、これは100%から6%を差し引く必要があります。</p><p>⚠️ ステップ2：誤答候補の「6%」は死刑判決を受けた方の割合であり、設問と逆の内容です。</p><p>❌ 理由：「6%」は設問が求めている情報と逆で、誤解を生みます。</p><p>✅ まとめ：94%の殺人犯がネバダ州で死刑判決を受けていないというのが正しい答えです。</p>","グラフ情報":{"ノード":[
+  {"id":"State_Nevada","label":"State","name":"ネバダ州"},
+  {"id":"Crime_Murder","label":"Crime","name":"殺人"},
+  {"id":"Stat_6PercentDeath_NV","label":"Statistic","name":"6%が死刑判決"}
+],"関係":[
+  {"source":"State_Nevada","relation":"has_statistic","target":"Stat_6PercentDeath_NV"},
+  {"source":"Crime_Murder","relation":"related_statistic","target":"Stat_6PercentDeath_NV"}
+]}}
+{"no":13138,"質問":"どの州が死刑判決を受けた人の80%を処刑していますか？","参考情報":"テキサス州では死刑判決を受けた人の40%を処刑しており、これが全米平均の約4倍。","誤答候補":"テキサス州","答え":"<p>📄 本文には<strong>テキサス州</strong>が死刑判決を受けた人の<strong>40%</strong>を処刑していると記されています。</p><p>😊 ステップ1：設問は「80%を処刑している州」を尋ねていますが、そのような割合は本文中にはありません。</p><p>⚠️ ステップ2：「40%」という記述があるため、80%という数値は誤りです。</p><p>❌ 理由：誤答候補「テキサス州」は本文にある割合と異なり、過大な数値に基づいた誤情報です。</p><p>✅ まとめ：テキサス州は40%を処刑していますが、80%ではありません。</p>","グラフ情報":{"ノード":[
+  {"id":"State_Texas","label":"State","name":"テキサス州"},
+  {"id":"Stat_40PercentExecuted","label":"Statistic","name":"40%が処刑"}
+],"関係":[
+  {"source":"State_Texas","relation":"has_statistic","target":"Stat_40PercentExecuted"}
+]}}
 """
 
 plausible = PlausibleAnswer()

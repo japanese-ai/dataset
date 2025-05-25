@@ -74,7 +74,11 @@ class ChatGptUI(ABC):
         time.sleep(self.wait_time)
 
     def replace_with_fallback(self, data):
-        patterns = [(r"\n},\n{", "\n}\n\n{"), (r"\n}\n{", "\n}\n\n{")]
+        patterns = [
+            (r"\n},\n{", "\n}\n\n{"),
+            (r"\n}\n{", "\n}\n\n{"),
+            (r"\n]}}", "\n]}}\n\n"),
+        ]
         for pattern, replacement in patterns:
             match = re.search(pattern, data, re.MULTILINE)
             if match:

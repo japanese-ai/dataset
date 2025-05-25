@@ -2,11 +2,16 @@ import json
 import re
 import time
 
-import emoji
 import pyautogui
 import pyperclip
 
-from script.util import is_valid_graph_info
+from script.util import (
+    has_duplicate_emojis,
+    has_html_tags,
+    has_japanese,
+    has_only_one_unique_emoji,
+    is_valid_graph_info,
+)
 
 example_data = [
     '"グラフ情報":{"ノード":[{"id":"Visa_Student","label":"VisaType","name":"学生ビザ"},{"id":"Doc_CoE","label":"Document","name":"証明書"}],"関係":[{"source":"Visa_Student","relation":"requires_document","target":"Doc_CoE"}]}'
@@ -50,7 +55,11 @@ def copy(batch_no_list, y_cor):
 
 
 def replace_with_fallback(data):
-    patterns = [(r"\n},\n{", "\n}\n\n{"), (r"\n}\n{", "\n}\n\n{")]
+    patterns = [
+        (r"\n},\n{", "\n}\n\n{"),
+        (r"\n}\n{", "\n}\n\n{"),
+        (r"\n]}}", "\n]}}\n\n"),
+    ]
     for pattern, replacement in patterns:
         match = re.search(pattern, data, re.MULTILINE)
         if match:
@@ -108,7 +117,7 @@ def get_clipboard_data(clipboard_data):
     return False, 0, None, None
 
 
-def is_valid_format(obj):
+def is_valid_format(self, obj):
     required_keys = {"質問", "参考情報", "誤答候補", "答え"}
 
     if not isinstance(obj, dict):
@@ -116,33 +125,28 @@ def is_valid_format(obj):
 
     if not required_keys.issubset(obj.keys()):
         return False
+
     if not all(isinstance(obj[key], str) for key in required_keys):
         return False
 
-    if "グラフ情報" not in obj:
+    if (
+        has_only_one_unique_emoji(obj.get("答え"))
+        or has_duplicate_emojis(obj.get("答え"))
+        or not has_html_tags(obj.get("答え"))
+    ):
         return False
-    if not is_valid_graph_info(obj["グラフ情報"]):
-        return False
+
+    for key in required_keys:
+        if not has_japanese(obj.get(key)):
+            return False
+
+    if self.have_graph_data:
+        if "グラフ情報" not in obj:
+            return False
+        if not is_valid_graph_info(obj["グラフ情報"]):
+            return False
 
     return True
-
-
-def extract_emojis(text):
-    return [char for char in text if char in emoji.EMOJI_DATA]
-
-
-def has_only_one_unique_emoji(text):
-    emojis = extract_emojis(text)
-    return len(emojis) == 1
-
-
-def has_duplicate_emojis(text):
-    emojis = extract_emojis(text)
-    return len(emojis) > 1 and len(set(emojis)) == 1
-
-
-def has_html_tags(text):
-    return bool(re.search(r"<[^>]+>", text))
 
 
 def is_jsonl(lines, batch_no_list):
@@ -152,12 +156,7 @@ def is_jsonl(lines, batch_no_list):
             continue
         try:
             obj = json.loads(line)
-            if (
-                not is_valid_format(obj)
-                or has_duplicate_emojis(obj["答え"])
-                or has_duplicate_emojis(obj["答え"])
-                or not has_html_tags(obj["答え"])
-            ):
+            if not is_valid_format(obj):
                 return False
             if obj.get("no") not in batch_no_list:
                 return False
@@ -199,7 +198,7 @@ output_file = "data/squad/plausible_translated_answer_fixed.jsonl"
 with open(input_file, "r", encoding="utf-8") as f:
     data_list = [json.loads(line) for line in f]
 
-start = 860
+start = 1090
 count = 1
 error_count = 0
 data_list = data_list[start:]
