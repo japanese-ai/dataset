@@ -21,6 +21,7 @@ class ChatGptUI(ABC):
         self.message_wait_x_cor = 1100
         self.message_wait_y_cor = 680
         self.wait_time = 120
+        self.copy_x_cor = 950
         self.close_voice_x_cor = 660
         self.close_voice_y_cor = 890
         self.get_data_y_cors = []
@@ -28,7 +29,7 @@ class ChatGptUI(ABC):
 
     def copy(self, filename, y_cor):
         pyperclip.copy(f"Error: {filename}\n")
-        pyautogui.moveTo(950, y_cor, duration=0.5)
+        pyautogui.moveTo(self.copy_x_cor, y_cor, duration=0.5)
         pyautogui.click()
         pyautogui.click()
 
@@ -103,6 +104,7 @@ class ChatGptUI(ABC):
     def get_clipboard_data(self, clipboard_data, check_rows):
         clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
         clipboard_data = clipboard_data.replace("</li>\n  <li>", "</li><li>")
+        clipboard_data = clipboard_data.replace("</li>\n<li>", "</li><li>")
         clipboard_data = clipboard_data.replace("\n<ul>\n  ", "<ul>")
         clipboard_data = clipboard_data.replace("\n</ul>\n", "</ul>")
 
@@ -129,10 +131,13 @@ class ChatGptUI(ABC):
                 (line.replace("}]}},", "}]}}")) for line in clipboard_data
             ]
 
-        clipboard_data = [json.loads(obj) for obj in clipboard_data]
-        clipboard_data = [json.dumps(obj, ensure_ascii=False) for obj in clipboard_data]
-        clipboard_data = "\n".join(clipboard_data)
-        clipboard_data += "\n"
+        try:
+            clipboard_data = [json.loads(obj) for obj in clipboard_data]
+            clipboard_data = [json.dumps(obj, ensure_ascii=False) for obj in clipboard_data]
+            clipboard_data = "\n".join(clipboard_data)
+            clipboard_data += "\n"
+        except:
+            return False, 0, None, None
 
         if any(item in clipboard_data for item in self.example_data):
             return True, 0, None, None
@@ -187,7 +192,7 @@ class ChatGptUI(ABC):
         return int(match.group(1)) if match else -1
 
     def start_get_data(
-        self, start, end=None, start_from_new_chat=True, start_from_half=False
+        self, start, end=None, start_from_new_chat=True, start_from_half=False,
     ):
         files = os.listdir(self.folder_path)
 
@@ -216,6 +221,7 @@ class ChatGptUI(ABC):
             pyautogui.click()
 
             is_first = False
+            start_from_half = False
 
             count += 1
             if count > 15:
