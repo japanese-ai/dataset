@@ -48,4 +48,7 @@ class Answer(ChatGptUI):
             if not is_valid_graph_info(obj["グラフ情報"]):
                 return False
 
+        if self.has_only_one_unique_emoji(obj.get("答え")) or self.has_duplicate_emojis(obj.get("答え")) or not self.has_html_tags(obj.get("答え")):
+            return False
+
         return True

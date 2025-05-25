@@ -93,7 +93,8 @@ class ChatGptUI(ABC):
 
     def has_only_one_unique_emoji(self, text):
         emojis = self.extract_emojis(text)
-        return len(emojis) == 1
+        if len(emojis) == 1:
+            return True
 
     def has_duplicate_emojis(self, text):
         emojis = self.extract_emojis(text)
@@ -101,6 +102,11 @@ class ChatGptUI(ABC):
 
     def has_html_tags(self, text):
         return bool(re.search(r"<[^>]+>", text))
+
+    def has_japanese(text):
+        japanese_pattern = re.compile('[\u3040-\u30FF\u4E00-\u9FFF\u30A0-\u30FF\uFF66-\uFF9F]')
+
+        return re.search(japanese_pattern, text)
 
     def is_jsonl(self, lines):
         for i, line in enumerate(lines, 1):
@@ -111,9 +117,7 @@ class ChatGptUI(ABC):
                 obj = json.loads(line)
                 if (
                     not self.is_valid_format(obj)
-                    or self.has_only_one_unique_emoji(obj.get("答え"))
-                    or self.has_duplicate_emojis(obj.get("答え"))
-                    or not self.has_html_tags(obj.get("答え"))
+                    
                 ):
                     print(f"Invalid format in line {i}: {line}")
                     return False
@@ -156,7 +160,7 @@ class ChatGptUI(ABC):
             clipboard_data = [json.dumps(obj, ensure_ascii=False) for obj in clipboard_data]
             clipboard_data = "\n".join(clipboard_data)
             clipboard_data += "\n"
-        except:
+        except Exception as e:
             return False, 0, None, None
 
         if any(item in clipboard_data for item in self.example_data):
