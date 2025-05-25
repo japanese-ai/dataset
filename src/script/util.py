@@ -1,3 +1,35 @@
+import re
+
+import emoji
+
+
+def extract_emojis(text):
+    return [char for char in text if char in emoji.EMOJI_DATA]
+
+
+def has_only_one_unique_emoji(text):
+    emojis = extract_emojis(text)
+    if len(emojis) == 1:
+        return True
+
+
+def has_duplicate_emojis(text):
+    emojis = extract_emojis(text)
+    return len(emojis) > 1 and len(set(emojis)) == 1
+
+
+def has_html_tags(text):
+    return bool(re.search(r"<[^>]+>", text))
+
+
+def has_japanese(text):
+    japanese_pattern = re.compile(
+        "[\u3040-\u30ff\u4e00-\u9fff\u30a0-\u30ff\uff66-\uff9f]"
+    )
+
+    return re.search(japanese_pattern, text)
+
+
 def is_valid_graph_info(graph_info):
     if not isinstance(graph_info, dict):
         return False
@@ -13,6 +45,8 @@ def is_valid_graph_info(graph_info):
         if not all(key in node for key in ["id", "label", "name"]):
             return False
         if not all(isinstance(node[key], str) for key in ["id", "label", "name"]):
+            return False
+        if not has_japanese(node.get("name")):
             return False
 
     if not isinstance(graph_info["関係"], list):

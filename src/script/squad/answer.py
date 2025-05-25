@@ -1,5 +1,11 @@
 from script.chat_gpt_ui import ChatGptUI
-from script.util import is_valid_graph_info
+from script.util import (
+    has_duplicate_emojis,
+    has_html_tags,
+    has_japanese,
+    has_only_one_unique_emoji,
+    is_valid_graph_info,
+)
 
 
 class Answer(ChatGptUI):
@@ -39,16 +45,25 @@ class Answer(ChatGptUI):
 
         if not required_keys.issubset(obj.keys()):
             return False
+
         if not all(isinstance(obj[key], str) for key in required_keys):
             return False
+
+        if (
+            has_only_one_unique_emoji(obj.get("答え"))
+            or has_duplicate_emojis(obj.get("答え"))
+            or not has_html_tags(obj.get("答え"))
+        ):
+            return False
+
+        for key in required_keys:
+            if not has_japanese(obj.get(key)):
+                return False
 
         if self.have_graph_data:
             if "グラフ情報" not in obj:
                 return False
             if not is_valid_graph_info(obj["グラフ情報"]):
                 return False
-
-        if self.has_only_one_unique_emoji(obj.get("答え")) or self.has_duplicate_emojis(obj.get("答え")) or not self.has_html_tags(obj.get("答え")):
-            return False
 
         return True

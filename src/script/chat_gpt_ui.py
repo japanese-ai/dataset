@@ -4,7 +4,6 @@ import re
 import time
 from abc import ABC, abstractmethod
 
-import emoji
 import pyautogui
 import pyperclip
 
@@ -88,26 +87,6 @@ class ChatGptUI(ABC):
     def is_valid_format(self, obj):
         pass
 
-    def extract_emojis(self, text):
-        return [char for char in text if char in emoji.EMOJI_DATA]
-
-    def has_only_one_unique_emoji(self, text):
-        emojis = self.extract_emojis(text)
-        if len(emojis) == 1:
-            return True
-
-    def has_duplicate_emojis(self, text):
-        emojis = self.extract_emojis(text)
-        return len(emojis) > 1 and len(set(emojis)) == 1
-
-    def has_html_tags(self, text):
-        return bool(re.search(r"<[^>]+>", text))
-
-    def has_japanese(text):
-        japanese_pattern = re.compile('[\u3040-\u30FF\u4E00-\u9FFF\u30A0-\u30FF\uFF66-\uFF9F]')
-
-        return re.search(japanese_pattern, text)
-
     def is_jsonl(self, lines):
         for i, line in enumerate(lines, 1):
             line = line.strip()
@@ -115,10 +94,7 @@ class ChatGptUI(ABC):
                 continue
             try:
                 obj = json.loads(line)
-                if (
-                    not self.is_valid_format(obj)
-                    
-                ):
+                if not self.is_valid_format(obj):
                     print(f"Invalid format in line {i}: {line}")
                     return False
             except json.JSONDecodeError:
@@ -157,10 +133,12 @@ class ChatGptUI(ABC):
 
         try:
             clipboard_data = [json.loads(obj) for obj in clipboard_data]
-            clipboard_data = [json.dumps(obj, ensure_ascii=False) for obj in clipboard_data]
+            clipboard_data = [
+                json.dumps(obj, ensure_ascii=False) for obj in clipboard_data
+            ]
             clipboard_data = "\n".join(clipboard_data)
             clipboard_data += "\n"
-        except Exception as e:
+        except Exception:
             return False, 0, None, None
 
         if any(item in clipboard_data for item in self.example_data):
@@ -216,7 +194,11 @@ class ChatGptUI(ABC):
         return int(match.group(1)) if match else -1
 
     def start_get_data(
-        self, start, end=None, start_from_new_chat=True, start_from_half=False,
+        self,
+        start,
+        end=None,
+        start_from_new_chat=True,
+        start_from_half=False,
     ):
         files = os.listdir(self.folder_path)
 
