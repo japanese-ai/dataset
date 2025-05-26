@@ -175,7 +175,7 @@ class ChatGptUI(ABC):
 
         is_appended = True
         if num_rows != check_rows or self.is_jsonl(lines) is False:
-            clipboard_data = f"Error: {filename}, {num_rows}lines (index: {index})\n"
+            clipboard_data = f"Error: {filename}, {num_rows}lines (index: {index})\n\n\n\n\n"
             is_appended = False
 
         with open(self.destination_file, "a", encoding="utf-8") as f:
