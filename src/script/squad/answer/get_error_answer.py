@@ -7,6 +7,9 @@ import pyperclip
 from script.squad.plausible_answer import PlausibleAnswer
 
 plausible = PlausibleAnswer()
+plausible.have_no = True
+
+no_list = []
 
 
 def append_data(content, batch_str):
@@ -29,7 +32,20 @@ def append_data(content, batch_str):
     is_appended = True
     if num_rows == len(content):
         valid, message = plausible.is_jsonl(lines)
-        if not valid:
+        if valid:
+            temp_lines = clipboard_data.strip().splitlines()
+            temp_lines = [json.loads(obj) for obj in temp_lines]
+            valid_no_list = [item["no"] for item in temp_lines]
+
+            exist = all(item in no_list for item in valid_no_list)
+
+            if not exist:
+                is_appended = False
+                clipboard_data = (
+                    f"Error: {batch_str} - all no are not included \n\n\n\n\n"
+                )
+
+        else:
             clipboard_data = f"Error: {batch_str} - {message}\n\n\n\n\n"
             is_appended = False
     else:
@@ -50,7 +66,7 @@ output_file = "data/squad/plausible_translated_answer_fixed.jsonl"
 with open(input_file, "r", encoding="utf-8") as f:
     data_list = [json.loads(line) for line in f]
 
-start = 2220
+start = 2215
 count = 1
 error_count = 0
 data_list = data_list[start:]

@@ -9,6 +9,7 @@ import pyperclip
 
 class ChatGptUI(ABC):
     def __init__(self):
+        self.have_no = False
         self.input_file = ""
         self.destination_file = ""
         self.batch_size = 5
