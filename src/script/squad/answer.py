@@ -63,7 +63,7 @@ class Answer(ChatGptUI):
         if self.have_graph_data:
             if "グラフ情報" not in obj:
                 return False
-            if not is_valid_graph_info(obj["グラフ情報"], obj, ["答え"]):
+            if not is_valid_graph_info(obj["グラフ情報"]):
                 return False
 
         return True
