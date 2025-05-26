@@ -183,10 +183,6 @@ class ChatGptUI(ABC):
 
         return False, None
 
-    def extract_number(self, filename):
-        match = re.search(r"_(\d+)\.json$", filename)
-        return int(match.group(1)) if match else -1
-
     def start_get_data(
         self,
         start,
@@ -206,7 +202,7 @@ class ChatGptUI(ABC):
                 self.make_new_chat(is_first)
 
             content = data_list[i : i + self.batch_size]
-            batch_str = f"{i} - {i + self.batch_size}"
+            batch_str = f"{start + i + 1} - {start + i + self.batch_size}"
             self.fill_content(content, batch_str)
             is_appended = self.append_data(content, batch_str)
             if is_appended is True:
