@@ -37,7 +37,7 @@ def fill_file(data):
     pyautogui.hotkey("command", "a")
     pyautogui.press("backspace")
 
-    data = f'"""\n{data}\n"""\n一行づつの答えにCoT形式をもっと詳しく入れて欲しい。出力はJSONL形式でお願いします。出力は各データが1行として全て5件とも表示されるようにしてください。\n※「no」項目とグラフ情報の出力は忘れずに'
+    data = f'"""\n{data}\n"""\n一行づつの答えにCoT形式をもっと詳しく入れて欲しい。出力はJSONL形式でお願いします。出力は各データが1行として全て5件とも表示されるようにしてください。\n※「no」項目とグラフ情報の出力は忘れずに\n※誤答候補を日本語に翻訳するのを忘れずに'
     pyperclip.copy(data)
     pyautogui.hotkey("command", "v")
 
@@ -117,7 +117,7 @@ def get_clipboard_data(clipboard_data):
     return False, 0, None, None
 
 
-def is_valid_format(self, obj):
+def is_valid_format(obj):
     required_keys = {"質問", "参考情報", "誤答候補", "答え"}
 
     if not isinstance(obj, dict):
@@ -140,11 +140,11 @@ def is_valid_format(self, obj):
         if not has_japanese(obj.get(key)):
             return False
 
-    if self.have_graph_data:
-        if "グラフ情報" not in obj:
-            return False
-        if not is_valid_graph_info(obj["グラフ情報"]):
-            return False
+    if "グラフ情報" not in obj:
+        return False
+
+    if not is_valid_graph_info(obj["グラフ情報"]):
+        return False
 
     return True
 
@@ -198,7 +198,7 @@ output_file = "data/squad/plausible_translated_answer_fixed.jsonl"
 with open(input_file, "r", encoding="utf-8") as f:
     data_list = [json.loads(line) for line in f]
 
-start = 1090
+start = 1145
 count = 1
 error_count = 0
 data_list = data_list[start:]
