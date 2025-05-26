@@ -1,5 +1,4 @@
 import json
-import os
 import re
 import time
 from abc import ABC, abstractmethod
@@ -10,8 +9,9 @@ import pyperclip
 
 class ChatGptUI(ABC):
     def __init__(self):
-        self.folder_path = ""
+        self.input_file = ""
         self.destination_file = ""
+        self.batch_size = 5
         self.new_chat_y_cor = 180
         self.new_chat_target_y_cor = 360
         self.message_x_cor = 470
@@ -27,8 +27,8 @@ class ChatGptUI(ABC):
         self.get_data_y_cors = []
         self.example_data = []
 
-    def copy(self, filename, y_cor):
-        pyperclip.copy(f"Error: {filename}\n")
+    def copy(self, batch_str, y_cor):
+        pyperclip.copy(f"Error: {batch_str}")
         pyautogui.moveTo(self.copy_x_cor, y_cor, duration=0.5)
         pyautogui.click()
         pyautogui.click()
@@ -45,28 +45,19 @@ class ChatGptUI(ABC):
         time.sleep(30)
 
     @abstractmethod
-    def get_message(self, content, filename, index, num_rows):
+    def get_message(self, content, num_rows):
         pass
 
-    def fill_file(self, filename, index=0):
+    def fill_content(self, content, batch_str):
         pyautogui.moveTo(self.message_x_cor, self.message_y_cor, duration=0.5)
         pyautogui.click()
 
         pyautogui.hotkey("command", "a")
         pyautogui.press("backspace")
 
-        file_path = os.path.join(self.folder_path, filename)
-        num_rows = 10 if index == 0 else 5
-        with open(file_path, "r", encoding="utf-8") as file:
-            content = json.load(file)
-            if index == 1:
-                content = content[:5]
-            elif index == 2:
-                content = content[5:]
-
-            data = self.get_message(content, filename, index, num_rows)
-            pyperclip.copy(data)
-            pyautogui.hotkey("command", "v")
+        data = self.get_message(content, batch_str, len(content))
+        pyperclip.copy(data)
+        pyautogui.hotkey("command", "v")
 
         pyautogui.moveTo(self.message_put_x_cor, self.message_put_y_cor, duration=0.5)
         pyautogui.click()
@@ -156,26 +147,25 @@ class ChatGptUI(ABC):
 
         return False, 0, None, None
 
-    def append_data(self, filename, index=0):
+    def append_data(self, content, batch_str):
         pyautogui.scroll(-100)
 
         clipboard_data = ""
         num_rows = 0
         lines = []
-        check_rows = 10 if index == 0 else 5
         for y_cor in self.get_data_y_cors:
-            self.copy(filename, y_cor)
+            self.copy(batch_str, y_cor)
             clipboard_data = pyperclip.paste()
             got_data, num_rows, clipboard_data, lines = self.get_clipboard_data(
-                clipboard_data, check_rows
+                clipboard_data, len(content)
             )
 
             if got_data:
                 break
 
         is_appended = True
-        if num_rows != check_rows or self.is_jsonl(lines) is False:
-            clipboard_data = f"Error: {filename}, {num_rows}lines (index: {index})\n\n\n\n\n"
+        if num_rows != len(content) or self.is_jsonl(lines) is False:
+            clipboard_data = f"Error: {batch_str}\n\n\n\n\n"
             is_appended = False
 
         with open(self.destination_file, "a", encoding="utf-8") as f:
@@ -202,28 +192,27 @@ class ChatGptUI(ABC):
         start,
         end=None,
         start_from_new_chat=True,
-        start_from_half=False,
     ):
-        files = os.listdir(self.folder_path)
-
-        files = sorted(files, key=self.extract_number)
-        files = files[start:end] if end is not None else files[start:]
-
         is_first = True
         count = 0 if start_from_new_chat else 1
         error_count = 0
 
-        for filename in files:
+        with open(self.input_file, "r", encoding="utf-8") as file:
+            data_list = json.load(file)
+
+        data_list = data_list[start:] if end is None else data_list[start:end]
+        for i in range(0, len(data_list), self.batch_size):
             if count == 0:
                 self.make_new_chat(is_first)
 
-            for index in [2] if start_from_half else [1, 2]:
-                self.fill_file(filename, index)
-                is_appended = self.append_data(filename, index)
-                if is_appended is True:
-                    error_count = 0
-                else:
-                    error_count += 1
+            content = data_list[i : i + self.batch_size]
+            batch_str = f"{i} - {i + self.batch_size}"
+            self.fill_content(content, batch_str)
+            is_appended = self.append_data(content, batch_str)
+            if is_appended is True:
+                error_count = 0
+            else:
+                error_count += 1
 
             pyautogui.moveTo(
                 self.close_voice_x_cor, self.close_voice_y_cor, duration=0.5
@@ -231,7 +220,6 @@ class ChatGptUI(ABC):
             pyautogui.click()
 
             is_first = False
-            start_from_half = False
 
             count += 1
             if count > 15:
