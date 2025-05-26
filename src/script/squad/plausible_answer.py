@@ -46,7 +46,7 @@ class PlausibleAnswer(ChatGptUI):
         ):
             return False
 
-        for key in required_keys:
+        for key in {"質問", "参考情報", "答え"}:
             if not has_japanese(obj.get(key)):
                 return False
 

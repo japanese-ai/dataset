@@ -44,7 +44,7 @@ def fill_file(data):
     pyautogui.moveTo(1040, 880, duration=0.5)
     pyautogui.click()
     pyautogui.moveTo(1100, 680, duration=0.5)
-    time.sleep(120)
+    time.sleep(180)
 
 
 def copy(batch_no_list, y_cor):
@@ -118,15 +118,15 @@ def get_clipboard_data(clipboard_data):
 
 
 def is_valid_format(obj):
-    required_keys = {"質問", "参考情報", "誤答候補", "答え"}
-
     if not isinstance(obj, dict):
         return False
 
-    if not required_keys.issubset(obj.keys()):
+    if not {"no", "質問", "参考情報", "誤答候補", "答え"}.issubset(obj.keys()):
         return False
 
-    if not all(isinstance(obj[key], str) for key in required_keys):
+    if not all(
+        isinstance(obj[key], str) for key in {"質問", "参考情報", "誤答候補", "答え"}
+    ):
         return False
 
     if (
@@ -136,15 +136,16 @@ def is_valid_format(obj):
     ):
         return False
 
-    for key in required_keys:
+    for key in {"質問", "参考情報", "答え"}:
         if not has_japanese(obj.get(key)):
             return False
 
-    if "グラフ情報" not in obj:
-        return False
+    if obj.get("no") >= 21740:
+        if "グラフ情報" not in obj:
+            return False
 
-    if not is_valid_graph_info(obj["グラフ情報"]):
-        return False
+        if not is_valid_graph_info(obj["グラフ情報"]):
+            return False
 
     return True
 
@@ -198,7 +199,7 @@ output_file = "data/squad/plausible_translated_answer_fixed.jsonl"
 with open(input_file, "r", encoding="utf-8") as f:
     data_list = [json.loads(line) for line in f]
 
-start = 1145
+start = 2165
 count = 1
 error_count = 0
 data_list = data_list[start:]

@@ -1,48 +1,16 @@
 from script.squad.plausible_answer import PlausibleAnswer
 
 check_data = """
-{"no":13154,"質問":"アメリカで最初に火あぶりの刑が行われた州はどこですか？","参考情報":"1825年にサウスカロライナ州で黒人奴隷が火あぶりにされたと記されている。","誤答候補":"サウスカロライナ州","答え":"<p>📄 本文には<strong>1825年にサウスカロライナ州</strong>で火あぶりの刑が行われた記録があります。</p><p>😊 ステップ1：この出来事は明確に記載されていますが、「最初に行われた」という記述は見当たりません。</p><p>⚠️ ステップ2：「最初」という言葉が明記されていない以上、それを前提とする誤答候補は支持されません。</p><p>❌ 理由：誤答候補「サウスカロライナ州」は火あぶりが行われた州としては正しいが、「最初に」という問いには文証がありません。</p><p>✅ まとめ：1825年に火あぶりが行われた記録はありますが、それが最初かどうかは不明です。</p>","グラフ情報":{"ノード":[
-  {"id":"State_SouthCarolina","label":"State","name":"サウスカロライナ州"},
-  {"id":"Event_Burning1825","label":"Event","name":"1825年の火あぶり処刑"}
-],"関係":[
-  {"source":"State_SouthCarolina","relation":"location_of","target":"Event_Burning1825"}
-]}}
-{"no":13155,"質問":"アメリカで最初に鎖で絞首刑にされた人物は誰ですか？","参考情報":"1913年4月4日、西バージニア州でジョン・マーシャルが鎖で絞首刑にされた。","誤答候補":"ジョン・マーシャル","答え":"<p>📄 本文には<strong>1913年4月4日</strong>に<strong>ジョン・マーシャル</strong>が<strong>西バージニア州</strong>で鎖による絞首刑にされたと記載されています。</p><p>😊 ステップ1：この出来事は事実として明記されていますが、「最初の例」という表現は見当たりません。</p><p>⚠️ ステップ2：「最後の鎖での絞首刑」とされる可能性はありますが、設問は「最初」を問うているため、誤答となります。</p><p>❌ 理由：ジョン・マーシャルは最初ではなく、本文の記述からもその証拠はありません。</p><p>✅ まとめ：ジョン・マーシャルは鎖による絞首刑を受けた人物として記録されていますが、「最初」ではないため誤答です。</p>","グラフ情報":{"ノード":[
-  {"id":"Person_JohnMarshall","label":"Person","name":"ジョン・マーシャル"},
-  {"id":"State_WestVirginia","label":"State","name":"西バージニア州"},
-  {"id":"Event_ChainHanging1913","label":"Event","name":"1913年の鎖絞首刑"}
-],"関係":[
-  {"source":"Person_JohnMarshall","relation":"subject_of","target":"Event_ChainHanging1913"},
-  {"source":"State_WestVirginia","relation":"location_of","target":"Event_ChainHanging1913"}
-]}}
-{"no":13156,"質問":"ユタ州で斬首による処刑が開始されたのはいつですか？","参考情報":"ユタ州では1851年から1888年まで斬首が合法だったが、実際に使われたことはなかった。","誤答候補":"1888年","答え":"<p>📄 本文によると、<strong>ユタ州</strong>では<strong>1851年</strong>から<strong>1888年</strong>までの間、斬首が合法でした。</p><p>😊 ステップ1：設問では「開始年」を問われています。</p><p>⚠️ ステップ2：誤答候補「1888年」は斬首の合法期間の終了年であり、開始年ではありません。</p><p>❌ 理由：1888年は制度の終わりを意味する年であり、「開始された年」ではありません。</p><p>✅ まとめ：斬首の合法化は1851年に始まったため、誤答候補「1888年」は不正確です。</p>","グラフ情報":{"ノード":[
-  {"id":"State_Utah","label":"State","name":"ユタ州"},
-  {"id":"Method_Beheading","label":"Method","name":"斬首"},
-  {"id":"Time_1851_1888","label":"Period","name":"1851年から1888年"}
-],"関係":[
-  {"source":"State_Utah","relation":"legalized_method_during","target":"Method_Beheading"},
-  {"source":"Method_Beheading","relation":"legal_period","target":"Time_1851_1888"}
-]}}
-{"no":13157,"質問":"アメリカの死刑囚のうち、南アメリカ系の割合は何パーセントですか？","参考情報":"アフリカ系アメリカ人が41%、ヒスパニック/ラテン系が13.5%、南アメリカ系の明記なし。","誤答候補":"41%","答え":"<p>📄 本文には<strong>アフリカ系アメリカ人</strong>が41%、<strong>ヒスパニック/ラテン系</strong>が13.5%とされています。</p><p>😊 ステップ1：設問は「南アメリカ系」の死刑囚の割合について尋ねています。</p><p>⚠️ ステップ2：「南アメリカ系」に関する記述は本文にはなく、データの対象外です。</p><p>❌ 理由：誤答候補「41%」はアフリカ系アメリカ人の割合であり、設問とは異なる人種カテゴリです。</p><p>✅ まとめ：南アメリカ系の割合についての情報は本文には記載されていません。</p>","グラフ情報":{"ノード":[
-  {"id":"Group_AfricanAmerican","label":"Group","name":"アフリカ系アメリカ人"},
-  {"id":"Group_HispanicLatino","label":"Group","name":"ヒスパニック/ラテン系"},
-  {"id":"Stat_41PercentAA","label":"Statistic","name":"41%"},
-  {"id":"Stat_13.5PercentHL","label":"Statistic","name":"13.5%"}
-],"関係":[
-  {"source":"Group_AfricanAmerican","relation":"percentage_on_death_row","target":"Stat_41PercentAA"},
-  {"source":"Group_HispanicLatino","relation":"percentage_on_death_row","target":"Stat_13.5PercentHL"}
-]}}
-{"no":13158,"質問":"1976年以降に処刑されたアメリカ人のうち、南アメリカ系の割合は何パーセントですか？","参考情報":"1976年以降、処刑された人の34%がアフリカ系アメリカ人であった。南アメリカ系に関する記述はない。","誤答候補":"34%","答え":"<p>📄 本文には<strong>1976年以降</strong>に処刑された人の<strong>34%</strong>がアフリカ系アメリカ人であったと記されています。</p><p>😊 ステップ1：設問は「南アメリカ系」の割合について尋ねています。</p><p>⚠️ ステップ2：「南アメリカ系」についての記述はなく、誤答候補「34%」は別カテゴリ（アフリカ系アメリカ人）に関するものです。</p><p>❌ 理由：34%はアフリカ系のデータであり、設問の対象である南アメリカ系については記載がありません。</p><p>✅ まとめ：南アメリカ系の割合に関する情報は本文にはなく、誤答候補は不正確です。</p>","グラフ情報":{"ノード":[
-  {"id":"Group_AfricanAmerican","label":"Group","name":"アフリカ系アメリカ人"},
-  {"id":"Stat_34PercentAA","label":"Statistic","name":"34%（1976年以降）"}
-],"関係":[
-  {"source":"Group_AfricanAmerican","relation":"execution_percentage_since_1976","target":"Stat_34PercentAA"}
-]}}
+{"no":20569,"質問":"マタオレアフィの固まった溶岩の源は何ですか？","参考情報":"サモアの島々は火山活動によって形成され、その源はサモアホットスポットです。すべての島は火山起源ですが、最も最近の噴火があったサヴァイイ島が火山活動を行っており、マタバヌ山での噴火は1905年から1911年、マタオレアフィでは1902年、マウガアフィでは1725年の噴火があります。","誤答候補":"サモアホットスポット","答え":"<p>📄 文書には<strong>サモアの島々が火山活動によって形成され、その源はサモアホットスポット</strong>であると明記されています。</p><p>😊 <strong>マタオレアフィの噴火（1902年）</strong>も記載されており、これはサモアホットスポットによるものであることが文脈から明らかです。</p><p>✅ よって、<strong>マタオレアフィの溶岩の源はサモアホットスポット</strong>と結論できます。</p><p>❌ <strong>誤答候補（サモアホットスポット）</strong>：これは実際に正答なので誤答としては不適切です。</p><p>まとめ：情報に完全に一致しており、正しい回答です。</p> ✅","グラフ情報":{"ノード":[{"id":"Location_Mataoleafi","label":"Place","name":"マタオレアフィ"},{"id":"Source_SamoaHotspot","label":"GeologicalFeature","name":"サモアホットスポット"}],"関係":[{"source":"Source_SamoaHotspot","relation":"is_lava_source_for","target":"Location_Mataoleafi"}]}}
+{"no":20570,"質問":"マウガアフィは他の島と何が違いますか？","参考情報":"サモアの島々は火山活動によって形成され、その源はサモアホットスポットです。すべての島は火山起源ですが、最も最近の噴火があったサヴァイイ島が火山活動を行っており、マタバヌ山での噴火は1905年から1911年、マタオレアフィでは1902年、マウガアフィでは1725年の噴火があります。","誤答候補":"火山活動がない","答え":"<p>📄 文書により、<strong>マウガアフィは1725年に噴火している</strong>ことが明記されています。</p><p>😊 これは<strong>他の島と同様に火山活動があった</strong>ことを意味し、「火山活動がない」は誤りです。</p><p>✅ よって、マウガアフィは火山活動を経験している島として他と共通点がありますが、「違い」については記述されていません。</p><p>❌ <strong>誤答候補（火山活動がない）</strong>：明確に噴火が記録されているため誤りです。</p><p>まとめ：火山活動があったことは明白であり、誤答候補は事実と矛盾します。</p> ❌","グラフ情報":{"ノード":[{"id":"Location_MaugaAfi","label":"Place","name":"マウガアフィ"},{"id":"Event_Eruption_1725","label":"Event","name":"1725年の噴火"}],"関係":[{"source":"Location_MaugaAfi","relation":"experienced_event","target":"Event_Eruption_1725"}]}}
+{"no":20576,"質問":"サモアで輸入する必要があるリソースは何ですか？","参考情報":"サモアの通貨はサモアタラで、サモア中央銀行によって発行および規制されています。サモアの経済は伝統的に農業と漁業に依存しており、現代では開発援助や海外からの家族からの送金、農産物の輸出が重要な経済要因となっています。農業は労働力の3分の2を雇用し、輸出の90%を占めています。主な輸出品目はココナッツクリーム、ココナッツオイル、ノニ（サモア語でノヌ果実のジュース）、コプラです。","誤答候補":"ココナッツクリーム、ココナッツオイル、ノニ（ジュース）、コプラ","答え":"<p>📄 文書では<strong>ココナッツ製品（クリーム・オイル・コプラ）およびノニジュース</strong>は<strong>主な輸出品目</strong>と記されています。</p><p>✅ よって、これらは<strong>輸入されるのではなく輸出される</strong>資源です。</p><p>❌ <strong>誤答候補（ココナッツクリーム、ココナッツオイル、ノニ、コプラ）</strong>：これらは輸出品目なので、誤答です。</p><p>まとめ：サモアが自国で生産し輸出しているものを「輸入リソース」とするのは誤りです。</p> ❌","グラフ情報":{"ノード":[{"id":"Country_Samoa","label":"Place","name":"サモア"},{"id":"Product_CoconutCream","label":"Product","name":"ココナッツクリーム"},{"id":"Product_CoconutOil","label":"Product","name":"ココナッツオイル"},{"id":"Product_NoniJuice","label":"Product","name":"ノニジュース"},{"id":"Product_Copra","label":"Product","name":"コプラ"}],"関係":[{"source":"Country_Samoa","relation":"exports","target":"Product_CoconutCream"},{"source":"Country_Samoa","relation":"exports","target":"Product_CoconutOil"},{"source":"Country_Samoa","relation":"exports","target":"Product_NoniJuice"},{"source":"Country_Samoa","relation":"exports","target":"Product_Copra"}]}}
+{"no":20578,"質問":"サモアタラの伝統的な依存果物は何ですか？","参考情報":"サモアの通貨はサモアタラで、サモア中央銀行によって発行および規制されています。サモアの経済は伝統的に農業と漁業に依存しており、現代では開発援助や海外からの家族からの送金、農産物の輸出が重要な経済要因となっています。農業は労働力の3分の2を雇用し、輸出の90%を占めています。主な輸出品目はココナッツクリーム、ココナッツオイル、ノニ（サモア語でノヌ果実のジュース）、コプラです。","誤答候補":"ノニ（ノヌ果実のジュース）","答え":"<p>📄 文書によると、<strong>ノニ果実（ノヌ）から作られるジュース</strong>は<strong>主要な輸出品目</strong>とされています。</p><p>😊 サモアの農業における重要な資源であり、経済への貢献も大きいため、伝統的に依存している果物といえます。</p><p>✅ よって、<strong>ノニ</strong>は正しい回答です。</p><p>❌ <strong>誤答候補（ノニ）</strong>：これは事実と一致しており、誤答ではありません。</p><p>まとめ：ノニ果実は経済を支える輸出品目であり、依存果物として正解です。</p> ✅","グラフ情報":{"ノード":[{"id":"Country_Samoa","label":"Place","name":"サモア"},{"id":"Product_NoniJuice","label":"Product","name":"ノニ（ノヌ果実のジュース）"}],"関係":[{"source":"Country_Samoa","relation":"exports","target":"Product_NoniJuice"}]}}
+{"no":20579,"質問":"近隣の太平洋諸国が求めていることは何ですか？","参考情報":"サモア政府は金融セクターの規制緩和、投資の奨励、財政規律の維持を求めています。[citation needed] 観察者は、労働市場の柔軟性が将来の経済進展の基本的な強みであると指摘しています。[citation needed] このセクターは、ホテルインフラへの主要な資本投資、隣接する太平洋諸国での政治的不安定、2005年のヴァージンサモア（当時のヴァージンブルー）との共同事業の立ち上げにより大きな支援を受けました。","誤答候補":"金融セクターの規制緩和、投資の奨励、財政規律の維持","答え":"<p>📄 文書によれば、<strong>これらの改革（金融規制の緩和、投資奨励、財政規律）</strong>を求めているのは<strong>サモア政府</strong>です。</p><p>❌ <strong>近隣の太平洋諸国が求めている</strong>とは記載されていません。</p><p>❌ <strong>誤答候補（金融セクターの規制緩和、投資の奨励、財政規律の維持）</strong>：これは文書中で<strong>サモア政府の方針</strong>として記載されており、誤りです。</p><p>まとめ：主体の誤認があり、誤答候補は事実と異なります。</p> ❌","グラフ情報":{"ノード":[{"id":"Entity_SamoaGov","label":"Organization","name":"サモア政府"},{"id":"Policy_FinanceLiberalization","label":"Policy","name":"金融セクターの規制緩和"},{"id":"Policy_InvestmentPromotion","label":"Policy","name":"投資の奨励"},{"id":"Policy_FiscalDiscipline","label":"Policy","name":"財政規律の維持"}],"関係":[{"source":"Entity_SamoaGov","relation":"seeks","target":"Policy_FinanceLiberalization"},{"source":"Entity_SamoaGov","relation":"seeks","target":"Policy_InvestmentPromotion"},{"source":"Entity_SamoaGov","relation":"seeks","target":"Policy_FiscalDiscipline"}]}}
 
 """
 
 plausible = PlausibleAnswer()
-plausible.have_graph_data = True
+plausible.have_graph_data = False
 
 is_valid, clipboard_data = plausible.check_clipboard_data(check_data, check_rows=5)
 print(clipboard_data)

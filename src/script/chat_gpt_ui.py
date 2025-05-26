@@ -89,12 +89,12 @@ class ChatGptUI(ABC):
                 continue
             try:
                 obj = json.loads(line)
-                if not self.is_valid_format(obj):
-                    print(f"Invalid format in line {i}: {line}")
-                    return False
-            except json.JSONDecodeError:
-                return False
-        return True
+                valid, message = self.is_valid_format(obj)
+                if not valid:
+                    return False, f"Line {i}: {message}"
+            except json.JSONDecodeError as e:
+                return False, f"Line {i}: {str(e)}"
+        return True, ""
 
     def get_clipboard_data(self, clipboard_data, check_rows):
         clipboard_data = clipboard_data.replace("</p>\n<p>", "</p><p>")
@@ -164,8 +164,13 @@ class ChatGptUI(ABC):
                 break
 
         is_appended = True
-        if num_rows != len(content) or self.is_jsonl(lines) is False:
-            clipboard_data = f"Error: {batch_str}\n\n\n\n\n"
+        if num_rows == len(content):
+            valid, message = self.is_jsonl(lines)
+            if not valid:
+                clipboard_data = f"Error: {batch_str} - {message}\n\n\n\n\n"
+                is_appended = False
+        else:
+            clipboard_data = f"Error: {batch_str} - Only have {num_rows} rows\n\n\n\n\n"
             is_appended = False
 
         with open(self.destination_file, "a", encoding="utf-8") as f:
