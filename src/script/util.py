@@ -36,7 +36,7 @@ def has_japanese(text):
     )
 
 
-def is_valid_graph_info(graph_info):
+def is_valid_graph_info(graph_info, obj, require_keys):
     if not isinstance(graph_info, dict):
         return False
 
@@ -52,8 +52,9 @@ def is_valid_graph_info(graph_info):
             return False
         if not all(isinstance(node[key], str) for key in ["id", "label", "name"]):
             return False
-        if not has_japanese(node.get("name")):
-            return False
+        for key in require_keys:
+            if not obj.get(key).contains(node.get("name")):
+                return False
 
     if not isinstance(graph_info["関係"], list):
         return False
