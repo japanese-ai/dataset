@@ -38,6 +38,9 @@ class PlausibleAnswer(ChatGptUI):
                 f"Invalid type: Expected a dictionary, got {type(obj).__name__}",
             )
 
+        if self.have_no and "no" not in obj:
+            return False, "Missing required key: 'no'"
+
         if not required_keys.issubset(obj.keys()):
             return False, f"Missing required keys: {required_keys - obj.keys()}"
 
