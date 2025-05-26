@@ -16,6 +16,9 @@ check_data = """
 answer = Answer()
 answer.have_graph_data = True
 
-is_valid, clipboard_data = answer.check_clipboard_data(check_data, check_rows=5)
+is_valid, clipboard_data, message = answer.check_clipboard_data(
+    check_data, check_rows=5
+)
 print(clipboard_data)
 print(f"Is Valid: {is_valid}")
+print(f"Message: {message}")

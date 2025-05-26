@@ -9,8 +9,7 @@ def extract_emojis(text):
 
 def has_only_one_unique_emoji(text):
     emojis = extract_emojis(text)
-    if len(emojis) == 1:
-        return True
+    return len(emojis) == 1
 
 
 def has_duplicate_emojis(text):
@@ -38,33 +37,61 @@ def has_japanese(text):
 
 def is_valid_graph_info(graph_info):
     if not isinstance(graph_info, dict):
-        return False
+        return (
+            False,
+            f"Invalid type: Expected a dictionary, got {type(graph_info).__name__}",
+        )
 
     if not all(key in graph_info for key in ["ノード", "関係"]):
-        return False
+        return (
+            False,
+            f"Missing required keys: {set(['ノード', '関係']) - set(graph_info.keys())}",
+        )
 
     if not isinstance(graph_info["ノード"], list):
-        return False
+        return False, "ノード must be a list"
+
+    if len(graph_info["ノード"]) == 0:
+        return False, "ノード list cannot be empty"
+
     for node in graph_info["ノード"]:
         if not isinstance(node, dict):
-            return False
+            return (
+                False,
+                f"Invalid type for ノード item: Expected a dictionary, got {type(node).__name__}",
+            )
+
         if not all(key in node for key in ["id", "label", "name"]):
-            return False
+            return (
+                False,
+                f"Missing required keys in ノード item: {set(['id', 'label', 'name']) - set(node.keys())}",
+            )
+
         if not all(isinstance(node[key], str) for key in ["id", "label", "name"]):
-            return False
+            return False, "All ノード keys must have string values"
 
     if not isinstance(graph_info["関係"], list):
-        return False
+        return False, "関係 must be a list"
+
     if len(graph_info["関係"]) == 0:
-        return False
+        return False, "関係 list cannot be empty"
+
     for relation in graph_info["関係"]:
         if not isinstance(relation, dict):
-            return False
+            return (
+                False,
+                f"Invalid type for 関係 item: Expected a dictionary, got {type(relation).__name__}",
+            )
+
         if not all(key in relation for key in ["source", "relation", "target"]):
-            return False
+            return (
+                False,
+                f"Missing required keys in 関係 item: {set(['source', 'relation', 'target']) - set(relation.keys())}",
+            )
+
         if not all(
             isinstance(relation[key], str) for key in ["source", "relation", "target"]
         ):
-            return False
+            return False, "All 関係 keys must have string values"
 
-    return True
+    return True, ""

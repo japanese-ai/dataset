@@ -183,10 +183,13 @@ class ChatGptUI(ABC):
             clipboard_data, check_rows
         )
 
-        if num_rows == check_rows and self.is_jsonl(lines) is True:
-            return True, clipboard_data
+        if num_rows == check_rows:
+            valid, message = self.is_jsonl(lines)
+        else:
+            valid = False
+            message = f"Only have {num_rows} rows"
 
-        return False, None
+        return valid, clipboard_data, message
 
     def start_get_data(
         self,

@@ -29,31 +29,39 @@ class PlausibleAnswer(ChatGptUI):
 
     def is_valid_format(self, obj):
         required_keys = {"質問", "参考情報", "誤答候補", "答え"}
+        japanese_keys = {"質問", "参考情報", "答え"}
 
         if not isinstance(obj, dict):
-            return False
+            return (
+                False,
+                f"Invalid type: Expected a dictionary, got {type(obj).__name__}",
+            )
 
         if not required_keys.issubset(obj.keys()):
-            return False
+            return False, f"Missing required keys: {required_keys - obj.keys()}"
 
         if not all(isinstance(obj[key], str) for key in required_keys):
-            return False
+            return False, "All required keys must have string values"
 
-        if (
-            has_only_one_unique_emoji(obj.get("答え"))
-            or has_duplicate_emojis(obj.get("答え"))
-            or not has_html_tags(obj.get("答え"))
-        ):
-            return False
+        if has_only_one_unique_emoji(obj.get("答え")):
+            return False, "Only have one emoji"
 
-        for key in {"質問", "参考情報", "答え"}:
+        if has_duplicate_emojis(obj.get("答え")):
+            return False, "Has duplicate emojis in the answer"
+
+        if not has_html_tags(obj.get("答え")):
+            return False, "Answer does not contain HTML tags"
+
+        for key in japanese_keys:
             if not has_japanese(obj.get(key)):
-                return False
+                return False, f"{key} does not contain Japanese characters"
 
         if self.have_graph_data:
             if "グラフ情報" not in obj:
-                return False
-            if not is_valid_graph_info(obj["グラフ情報"]):
-                return False
+                return False, "Missing 'グラフ情報' key in the object"
 
-        return True
+            valid, message = is_valid_graph_info(obj["グラフ情報"])
+            if not valid:
+                return False, f"Invalid graph information: {message}"
+
+        return True, ""
