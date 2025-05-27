@@ -147,8 +147,8 @@ class ChatGptUI(ABC):
             return True, num_rows, clipboard_data, lines
 
         return False, 0, None, None
-
-    def append_data(self, content, batch_str):
+    
+    def get_append_data(self, content, batch_str):
         pyautogui.scroll(-100)
 
         clipboard_data = ""
@@ -165,17 +165,47 @@ class ChatGptUI(ABC):
                 break
 
         is_appended = True
+        line_break = "\n" * len(content)
         if num_rows == len(content):
             valid, message = self.is_jsonl(lines)
             if not valid:
-                clipboard_data = f"Error: {batch_str} - {message}\n\n\n\n\n"
+                clipboard_data = f"Error: {batch_str} - {message}{line_break}"
                 is_appended = False
         else:
-            clipboard_data = f"Error: {batch_str} - Only have {num_rows} rows\n\n\n\n\n"
+            clipboard_data = (
+                f"Error: {batch_str} - Only have {num_rows} rows{line_break}"
+            )
             is_appended = False
+
+        return is_appended, clipboard_data
+
+    def append_data(self, content, batch_str):
+        is_appended, clipboard_data = self.get_append_data(content, batch_str)
 
         with open(self.destination_file, "a", encoding="utf-8") as f:
             f.write(clipboard_data)
+
+        return is_appended
+    
+    def append_error_data(self, error_data, content, batch_str):
+        is_appended, clipboard_data = self.get_append_data(content, batch_str)
+        clipboard_data = clipboard_data.rstrip('\n')
+
+        data_list = []
+        with open(self.destination_file, "r", encoding="utf-8") as f:
+            is_found = False
+            for line in f:
+                if is_found and line.strip() == "":
+                    continue
+
+                if line == error_data["line"] and is_found is False:
+                    data_list.append(clipboard_data)
+                    is_found = True
+                else:
+                    data_list.append(line)
+                    
+        with open(self.destination_file, "w", encoding="utf-8") as f:
+            f.write("\n".join(data_list) + "\n")
 
         return is_appended
 
@@ -214,6 +244,50 @@ class ChatGptUI(ABC):
             batch_str = f"{start + i + 1} - {start + i + self.batch_size}"
             self.fill_content(content, batch_str)
             is_appended = self.append_data(content, batch_str)
+            if is_appended is True:
+                error_count = 0
+            else:
+                error_count += 1
+
+            pyautogui.moveTo(
+                self.close_voice_x_cor, self.close_voice_y_cor, duration=0.5
+            )
+            pyautogui.click()
+
+            is_first = False
+
+            count += 1
+            if count > 15:
+                count = 0
+                time.sleep(300)
+
+            if error_count >= 5:
+                break
+
+    def get_error_data(self, start_from_new_chat=True):
+        is_first = True
+        count = 0 if start_from_new_chat else 1
+        error_count = 0
+
+        with open(self.input_file, "r", encoding="utf-8") as file:
+            data_list = json.load(file)
+
+        error_data_list = []
+        with open(self.destination_file, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("Error: "):
+                    remove_line = line.strip().replace("Error: ", "")
+                    data = remove_line.split(" - ")
+                    error_data_list.append({"line": line, "start": data[0], "batch": data[1]})
+
+        for error_data in error_data_list:
+            if count == 0:
+                self.make_new_chat(is_first)
+
+            content = data_list[error_data["start"] : error_data["start"] + error_data["batch"]]
+            batch_str = f"{error_data["start"] + 1} - {error_data["start"] + error_data["batch"]}"
+            self.fill_content(content, batch_str)
+            is_appended = self.append_error_data(error_data, content, batch_str)
             if is_appended is True:
                 error_count = 0
             else:

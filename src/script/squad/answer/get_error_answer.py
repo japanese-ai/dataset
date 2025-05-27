@@ -66,14 +66,14 @@ output_file = "data/squad/plausible_translated_answer_fixed.jsonl"
 with open(input_file, "r", encoding="utf-8") as f:
     data_list = [json.loads(line) for line in f]
 
-start = 2280
-count = 1
+start = 2290
+count = 0
 error_count = 0
 data_list = data_list[start:]
 batch_size = 5
 is_first = True
 
-plausible.wait_time = 180
+plausible.wait_time = 120
 
 
 for i in range(0, len(data_list), batch_size):
