@@ -35,6 +35,27 @@ def has_japanese(text):
     )
 
 
+def is_valid_answer(answer):
+
+    if has_only_one_unique_emoji(answer):
+        return False, "Only have one emoji"
+
+    if has_duplicate_emojis(answer):
+        return False, "Has duplicate emojis in the answer"
+
+    if not has_html_tags(answer):
+        return False, "Answer does not contain HTML tags"
+
+    has_icons_or_tags = bool(
+        re.search(r"[🔬📄✅🧲📘📚📝⚠️❓➡️💡]|<strong>|<p>|<ol>|<ul>|<li>|<em>", answer)
+    )
+
+    if not has_icons_or_tags:
+        return False, "Answer does not contain CoT icons or tags"
+
+    return True, ""
+
+
 def is_valid_graph_info(graph_info):
     if not isinstance(graph_info, dict):
         return (

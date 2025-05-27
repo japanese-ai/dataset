@@ -1,11 +1,5 @@
 from script.chat_gpt_ui import ChatGptUI
-from script.util import (
-    has_duplicate_emojis,
-    has_html_tags,
-    has_japanese,
-    has_only_one_unique_emoji,
-    is_valid_graph_info,
-)
+from script.util import has_japanese, is_valid_answer, is_valid_graph_info
 
 
 class Answer(ChatGptUI):
@@ -55,14 +49,9 @@ class Answer(ChatGptUI):
         if not all(isinstance(obj[key], str) for key in required_keys):
             return False, "All required keys must have string values"
 
-        if has_only_one_unique_emoji(obj.get("答え")):
-            return False, "Only have one emoji in the answer"
-
-        if has_duplicate_emojis(obj.get("答え")):
-            return False, "Has duplicate emojis in the answer"
-
-        if not has_html_tags(obj.get("答え")):
-            return False, "Answer does not contain HTML tags"
+        valid, message = is_valid_answer(obj.get("答え"))
+        if not valid:
+            return False, message
 
         for key in required_keys:
             if not has_japanese(obj.get(key)):
