@@ -305,6 +305,7 @@ class ChatGptUI(ABC):
 
             content = data_list[(error_data["start"] - 1) : error_data["end"]]
             batch_str = f"{error_data['start']} - {error_data['end']}"
+            self.current_start_no = error_data["start"]
 
             self.fill_content(content, batch_str)
             is_appended = self.append_error_data(error_data, content, batch_str)
