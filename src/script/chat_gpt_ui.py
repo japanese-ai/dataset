@@ -27,6 +27,7 @@ class ChatGptUI(ABC):
         self.close_voice_y_cor = 890
         self.get_data_y_cors = []
         self.example_data = []
+        self.current_start_no = 0
 
     def copy(self, batch_str, y_cor):
         pyperclip.copy(f"Error: {batch_str}")
@@ -223,6 +224,20 @@ class ChatGptUI(ABC):
 
         return valid, clipboard_data, message
 
+    def check_output_file_valid(self, error_file):
+        with open(self.destination_file, "r", encoding="utf-8") as f:
+            data_list = [json.loads(line) for line in f]
+
+        error_list = []
+        for data in data_list:
+            valid, message = self.is_valid_format(data)
+            if not valid:
+                error_list.append({"no": data.get("no"), "message": message})
+
+        with open(error_file, "w") as out:
+            for obj in error_list:
+                out.write(json.dumps(obj, ensure_ascii=False) + "\n")
+
     def start_get_data(
         self,
         start,
@@ -243,6 +258,7 @@ class ChatGptUI(ABC):
 
             content = data_list[i : i + self.batch_size]
             batch_str = f"{start + i + 1} - {start + i + self.batch_size}"
+            self.current_start_no = start + i + 1
             self.fill_content(content, batch_str)
             is_appended = self.append_data(content, batch_str)
             if is_appended is True:
@@ -287,9 +303,7 @@ class ChatGptUI(ABC):
             if count == 0:
                 self.make_new_chat(is_first)
 
-            content = data_list[
-                (error_data["start"] - 1) : error_data["end"]
-            ]
+            content = data_list[(error_data["start"] - 1) : error_data["end"]]
             batch_str = f"{error_data['start']} - {error_data['end']}"
 
             self.fill_content(content, batch_str)

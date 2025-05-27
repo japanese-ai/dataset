@@ -11,7 +11,6 @@ from script.util import (
 class PlausibleAnswer(ChatGptUI):
     def __init__(self):
         super().__init__()
-        self.have_graph_data = False
         self.input_file = "data/squad/processed/plausible_answers_dataset.json"
         self.destination_file = "data/squad/plausible_translated.jsonl"
         self.get_data_y_cors = list(range(177, 588, 10))
@@ -23,7 +22,7 @@ class PlausibleAnswer(ChatGptUI):
 
     def get_message(self, content, batch_str, num_rows):
         no_str = "\n※「no」項目を忘れずに出力してください。" if self.have_no else ""
-        if self.have_graph_data:
+        if self.current_start_no > 21740:
             return f'"""\n{content}\n"""\nこのデータセット({batch_str}){num_rows}件を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、グラフ情報を必ず参照して、HTMLと絵文字を含むCoT形式の回答を生成してください。グラフ情報は必ず含め、誤答候補も出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。{no_str}\n※誤答候補は配列で出力しちゃダメ\n※答えにCoT形式をもっと詳しく入れて欲しい\n※答えにもっと絵文字を入れて欲しい\nグラフ情報は例の情報にならないように\n※ノードの「name」を日本語に翻訳して欲しい\n※関係のデータを忘れずに'
 
         return f'"""\n{content}\n"""\nこのデータセット({batch_str}){num_rows}を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、HTMLと絵文字を含むCoT形式の回答を生成してください。誤答候補は必ず含めて出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。{no_str}\n※誤答候補は配列で出力しちゃダメ\n※答えにCoT形式をもっと詳しく入れて欲しい\n※答えにもっと絵文字を入れて欲しい'
@@ -60,7 +59,7 @@ class PlausibleAnswer(ChatGptUI):
             if not has_japanese(obj.get(key)):
                 return False, f"{key} does not contain Japanese characters"
 
-        if self.have_graph_data:
+        if self.have_no and obj.get("no") > 21740 or self.current_start_no > 21740:
             if "グラフ情報" not in obj:
                 return False, "Missing 'グラフ情報' key in the object"
 
