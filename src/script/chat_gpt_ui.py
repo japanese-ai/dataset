@@ -2,6 +2,7 @@ import json
 import re
 import time
 from abc import ABC, abstractmethod
+from collections import OrderedDict
 
 import pyautogui
 import pyperclip
@@ -224,20 +225,6 @@ class ChatGptUI(ABC):
 
         return valid, clipboard_data, message
 
-    def check_output_file_valid(self, error_file):
-        with open(self.destination_file, "r", encoding="utf-8") as f:
-            data_list = [json.loads(line) for line in f]
-
-        error_list = []
-        for data in data_list:
-            valid, message = self.is_valid_format(data)
-            if not valid:
-                error_list.append({"no": data.get("no"), "message": message})
-
-        with open(error_file, "w") as out:
-            for obj in error_list:
-                out.write(json.dumps(obj, ensure_ascii=False) + "\n")
-
     def start_get_data(
         self,
         start,
@@ -328,3 +315,145 @@ class ChatGptUI(ABC):
 
             if error_count >= 5:
                 break
+
+    def add_no_to_output(self):
+        fixed_data = []
+
+        with open(self.destination_file, "r", encoding="utf-8") as f:
+            for idx, line in enumerate(f):
+                line = line.strip()
+                if not line:
+                    continue
+
+                data = json.loads(line)
+
+                new_obj = OrderedDict()
+                new_obj["no"] = idx + 1
+                for k, v in data.items():
+                    new_obj[k] = v
+
+                fixed_data.append(new_obj)
+
+        with open(self.destination_file, "w", encoding="utf-8") as f:
+            for item in fixed_data:
+                json.dump(item, f, ensure_ascii=False)
+                f.write("\n")
+
+    def extract_invalid_data_from_output(self, invalid_file):
+        with open(self.destination_file, "r", encoding="utf-8") as f:
+            data_list = [json.loads(line) for line in f]
+
+        error_list = []
+        for data in data_list:
+            valid, message = self.is_valid_format(data)
+            if not valid:
+                error_list.append({"no": data.get("no"), "message": message})
+
+        with open(invalid_file, "w", encoding="utf-8") as f:
+            for eror in error_list:
+                json.dump(eror, f, ensure_ascii=False)
+                f.write("\n")
+
+        return error_list
+
+    def append_invalid_fixed_data(self, content, batch_str, invalid_file, fix_file):
+        is_appended, clipboard_data = self.get_append_data(content, batch_str)
+
+        if not is_appended:
+            return False
+
+        # Append fixed data
+        with open(fix_file, "a", encoding="utf-8") as f:
+            f.write(clipboard_data)
+
+        fixed_no_set = {obj.get("no") for obj in content}
+
+        # Read invalid entries and keep only those not fixed
+        remaining_invalids = []
+        with open(invalid_file, "r", encoding="utf-8") as f:
+            for line in f:
+                obj = json.loads(line)
+                if obj.get("no") not in fixed_no_set:
+                    remaining_invalids.append(obj)
+
+        # Overwrite invalid_file with remaining entries
+        with open(invalid_file, "w", encoding="utf-8") as f:
+            for obj in remaining_invalids:
+                json.dump(obj, f, ensure_ascii=False)
+                f.write("\n")
+
+        return True
+
+    def fix_invalid_data(self, invalid_file, fix_file, start_from_new_chat=True):
+        # get data from invalid_file
+        with open(invalid_file, "r", encoding="utf-8") as f:
+            invalid_list = [json.loads(line) for line in f]
+            invalid_no_list = [item["no"] for item in invalid_list]
+
+        # get data from destination_file
+        error_data_list = []
+        with open(self.destination_file, "r", encoding="utf-8") as f:
+            for line in f:
+                obj = json.loads(line)
+                if obj.get("no") in invalid_no_list:
+                    error_data_list.append(obj)
+
+        # get data fro ui
+        is_first = True
+        count = 0 if start_from_new_chat else 1
+        error_count = 0
+
+        for i in range(0, len(error_data_list), self.batch_size):
+            if count == 0:
+                self.make_new_chat(is_first)
+
+            content = error_data_list[i : i + self.batch_size]
+            batch_str = ", ".join([str(obj.get("no")) for obj in content])
+            self.current_start_no = content[-1].get("no")
+            self.fill_content(content, batch_str)
+            is_appended = self.append_invalid_fixed_data(
+                content, batch_str, invalid_file, fix_file
+            )
+            if is_appended is True:
+                error_count = 0
+            else:
+                error_count += 1
+
+            pyautogui.moveTo(
+                self.close_voice_x_cor, self.close_voice_y_cor, duration=0.5
+            )
+            pyautogui.click()
+
+            is_first = False
+
+            count += 1
+            if count > 15:
+                count = 0
+                time.sleep(300)
+
+            if error_count >= 5:
+                break
+
+    def merge_fixed_data(self, fixed_file):
+        merged = {}
+
+        with open(self.destination_file, "r", encoding="utf-8") as f1:
+            for line in f1:
+                obj = json.loads(line)
+                merged[obj["no"]] = obj
+
+        with open(fixed_file, "r", encoding="utf-8") as f2:
+            for line in f2:
+                obj = json.loads(line)
+                no = obj["no"]
+                if no in merged:
+                    new_obj = {}
+                    for key in merged[no]:
+                        new_obj[key] = obj.get(key, merged[no][key])
+                    merged[no] = new_obj
+
+        # Write merged results
+        with open(self.destination_file, "w", encoding="utf-8") as out:
+            for obj in merged.values():
+                json.dump(obj, out, ensure_ascii=False)
+                out.write("\n")
