@@ -189,13 +189,14 @@ class ChatGptUI(ABC):
 
     def append_error_data(self, error_data, content, batch_str):
         is_appended, clipboard_data = self.get_append_data(content, batch_str)
-        clipboard_data = clipboard_data.rstrip("\n")
 
+        error_blank_len = len(content) - 1
         data_list = []
         with open(self.destination_file, "r", encoding="utf-8") as f:
             is_found = False
             for line in f:
-                if is_found and line.strip() == "":
+                if is_found and line.strip() == "" and error_blank_len > 0:
+                    error_blank_len -= 1
                     continue
 
                 if line == error_data["line"] and is_found is False:
@@ -205,7 +206,7 @@ class ChatGptUI(ABC):
                     data_list.append(line)
 
         with open(self.destination_file, "w", encoding="utf-8") as f:
-            f.write("\n".join(data_list) + "\n")
+            f.write("".join(data_list))
 
         return is_appended
 
@@ -279,7 +280,7 @@ class ChatGptUI(ABC):
                     remove_line = line.strip().replace("Error: ", "")
                     data = remove_line.split(" - ")
                     error_data_list.append(
-                        {"line": line, "start": data[0], "batch": data[1]}
+                        {"line": line, "start": int(data[0]), "end": int(data[1])}
                     )
 
         for error_data in error_data_list:
@@ -287,9 +288,9 @@ class ChatGptUI(ABC):
                 self.make_new_chat(is_first)
 
             content = data_list[
-                error_data["start"] : error_data["start"] + error_data["batch"]
+                (error_data["start"] - 1) : error_data["end"]
             ]
-            batch_str = f"{error_data['start'] + 1} - {error_data['start'] + error_data['batch']}"
+            batch_str = f"{error_data['start']} - {error_data['end']}"
 
             self.fill_content(content, batch_str)
             is_appended = self.append_error_data(error_data, content, batch_str)
