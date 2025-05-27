@@ -236,7 +236,12 @@ class ChatGptUI(ABC):
         error_count = 0
 
         with open(self.input_file, "r", encoding="utf-8") as file:
-            data_list = json.load(file)
+            if self.input_file.endswith(".json"):
+                data_list = json.load(file)
+            elif self.input_file.endswith(".jsonl"):
+                data_list = [json.loads(line) for line in file]
+            else:
+                raise ValueError("Unsupported file format. Use .json or .jsonl")
 
         data_list = data_list[start:] if end is None else data_list[start:end]
         for i in range(0, len(data_list), self.batch_size):

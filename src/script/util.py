@@ -56,7 +56,7 @@ def is_valid_answer(answer):
     return True, ""
 
 
-def is_valid_graph_info(graph_info):
+def is_valid_graph_info(graph_info, allow_empty_data=False):
     if not isinstance(graph_info, dict):
         return (
             False,
@@ -72,7 +72,7 @@ def is_valid_graph_info(graph_info):
     if not isinstance(graph_info["ノード"], list):
         return False, "ノード must be a list"
 
-    if len(graph_info["ノード"]) == 0:
+    if len(graph_info["ノード"]) == 0 and not allow_empty_data:
         return False, "ノード list cannot be empty"
 
     for node in graph_info["ノード"]:
@@ -94,7 +94,7 @@ def is_valid_graph_info(graph_info):
     if not isinstance(graph_info["関係"], list):
         return False, "関係 must be a list"
 
-    if len(graph_info["関係"]) == 0:
+    if len(graph_info["関係"]) == 0 and not allow_empty_data:
         return False, "関係 list cannot be empty"
 
     for relation in graph_info["関係"]:
