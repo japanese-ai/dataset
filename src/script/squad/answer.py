@@ -68,7 +68,7 @@ class Answer(ChatGptUI):
             if not has_japanese(obj.get(key)):
                 return False, f"{key} does not contain Japanese characters"
 
-        if self.have_no and obj.get("no") > 43210 or self.current_start_no > 43210:
+        if (self.have_no and obj.get("no") > 43210) or self.current_start_no > 43210:
             if "グラフ情報" not in obj:
                 return False, "Missing 'グラフ情報' key in the object"
 

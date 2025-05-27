@@ -59,7 +59,7 @@ class PlausibleAnswer(ChatGptUI):
             if not has_japanese(obj.get(key)):
                 return False, f"{key} does not contain Japanese characters"
 
-        if self.have_no and obj.get("no") > 21740 or self.current_start_no > 21740:
+        if (self.have_no and obj.get("no") > 21740) or self.current_start_no > 21740:
             if "グラフ情報" not in obj:
                 return False, "Missing 'グラフ情報' key in the object"
 
