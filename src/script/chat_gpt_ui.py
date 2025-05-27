@@ -147,7 +147,7 @@ class ChatGptUI(ABC):
             return True, num_rows, clipboard_data, lines
 
         return False, 0, None, None
-    
+
     def get_append_data(self, content, batch_str):
         pyautogui.scroll(-100)
 
@@ -186,10 +186,10 @@ class ChatGptUI(ABC):
             f.write(clipboard_data)
 
         return is_appended
-    
+
     def append_error_data(self, error_data, content, batch_str):
         is_appended, clipboard_data = self.get_append_data(content, batch_str)
-        clipboard_data = clipboard_data.rstrip('\n')
+        clipboard_data = clipboard_data.rstrip("\n")
 
         data_list = []
         with open(self.destination_file, "r", encoding="utf-8") as f:
@@ -203,7 +203,7 @@ class ChatGptUI(ABC):
                     is_found = True
                 else:
                     data_list.append(line)
-                    
+
         with open(self.destination_file, "w", encoding="utf-8") as f:
             f.write("\n".join(data_list) + "\n")
 
@@ -278,14 +278,19 @@ class ChatGptUI(ABC):
                 if line.startswith("Error: "):
                     remove_line = line.strip().replace("Error: ", "")
                     data = remove_line.split(" - ")
-                    error_data_list.append({"line": line, "start": data[0], "batch": data[1]})
+                    error_data_list.append(
+                        {"line": line, "start": data[0], "batch": data[1]}
+                    )
 
         for error_data in error_data_list:
             if count == 0:
                 self.make_new_chat(is_first)
 
-            content = data_list[error_data["start"] : error_data["start"] + error_data["batch"]]
-            batch_str = f"{error_data["start"] + 1} - {error_data["start"] + error_data["batch"]}"
+            content = data_list[
+                error_data["start"] : error_data["start"] + error_data["batch"]
+            ]
+            batch_str = f"{error_data['start'] + 1} - {error_data['start'] + error_data['batch']}"
+
             self.fill_content(content, batch_str)
             is_appended = self.append_error_data(error_data, content, batch_str)
             if is_appended is True:
