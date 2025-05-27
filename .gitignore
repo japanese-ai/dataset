@@ -173,6 +173,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-processed/
 temp/
 poetry.lock
+.DS_Store
