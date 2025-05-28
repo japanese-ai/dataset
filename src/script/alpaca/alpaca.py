@@ -45,7 +45,7 @@ class Alpaca(ChatGptUI):
         if not all(isinstance(obj[key], str) for key in required_keys):
             return False, "All required keys must have string values"
 
-        valid, message = is_valid_answer(obj.get("答え"))
+        valid, message = is_valid_answer(obj.get("答え"), is_cot=obj.get("cot"))
         if not valid:
             return False, message
 

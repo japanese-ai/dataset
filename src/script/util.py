@@ -7,9 +7,12 @@ def extract_emojis(text):
     return [char for char in text if char in emoji.EMOJI_DATA]
 
 
-def has_only_one_unique_emoji(text):
+def has_more_than_one_emoji(text, is_cot):
     emojis = extract_emojis(text)
-    return len(emojis) == 1
+    if is_cot:
+        return len(emojis) > 1
+
+    return True
 
 
 def has_duplicate_emojis(text):
@@ -35,9 +38,9 @@ def has_japanese(text):
     )
 
 
-def is_valid_answer(answer):
+def is_valid_answer(answer, is_cot=True):
 
-    if has_only_one_unique_emoji(answer):
+    if not has_more_than_one_emoji(answer, is_cot):
         return False, "Only have one emoji"
 
     if has_duplicate_emojis(answer):
@@ -46,12 +49,15 @@ def is_valid_answer(answer):
     if not has_html_tags(answer):
         return False, "Answer does not contain HTML tags"
 
-    has_icons_or_tags = bool(
-        re.search(r"[🔬📄✅🧲📘📚📝⚠️❓➡️💡]|<strong>|<p>|<ol>|<ul>|<li>|<em>", answer)
-    )
+    if is_cot:
+        has_icons_or_tags = bool(
+            re.search(
+                r"[🔬📄✅🧲📘📚📝⚠️❓➡️💡]|<strong>|<p>|<ol>|<ul>|<li>|<em>", answer
+            )
+        )
 
-    if not has_icons_or_tags:
-        return False, "Answer does not contain CoT icons or tags"
+        if not has_icons_or_tags:
+            return False, "Answer does not contain CoT icons or tags"
 
     return True, ""
 
