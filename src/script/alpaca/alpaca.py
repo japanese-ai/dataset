@@ -1,5 +1,10 @@
 from script.chat_gpt_ui import ChatGptUI
-from script.util import has_japanese, is_valid_answer, is_valid_graph_info
+from script.util import (
+    has_japanese,
+    is_valid_answer,
+    is_valid_graph_info,
+    remove_html_tags,
+)
 
 
 class Alpaca(ChatGptUI):
@@ -15,9 +20,9 @@ class Alpaca(ChatGptUI):
         self.new_chat_target_y_cor = 390
 
     def get_message(self, content, batch_str, num_rows):
-        return f'"""\n{content}\n"""\nこのデータセット({batch_str}){num_rows}を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、HTMLと絵文字を含むCoT形式の回答を生成してください。誤答候補は必ず含めて出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。\n※「no」項目を忘れずに出力してください。\n※答えにCoT形式が必要の場合をもっと詳しく入れて欲しい\n※答えにもっと絵文字を入れて欲しい\nグラフ情報は例の情報にならないように\n※ノードの「name」を日本語に翻訳して欲しい\n※関係のデータを忘れずに'
+        return f'"""\n{content}\n"""\nこのデータセット({batch_str}){num_rows}を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、HTMLと絵文字を含むCoT形式の回答を生成してください。誤答候補は必ず含めて出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。\n※「no」項目を忘れずに出力してください。\n※参考情報は必ず日本語に翻訳してください\n※参考情報は日本語に翻訳するだけでよい\n※答えにCoT形式が必要の場合をもっと詳しく入れて欲しい\n※答えにもっと絵文字を入れて欲しい\n※グラフ情報は例の情報にならないように\n※ノードの「name」を日本語に翻訳して欲しい\n※関係のデータを忘れずに'
 
-    def is_valid_format(self, obj):
+    def is_valid_format(self, content, obj):
         required_keys = {"質問", "参考情報", "誤答候補", "答え"}
         japanese_keys = {"質問", "参考情報", "答え"}
 
@@ -49,6 +54,8 @@ class Alpaca(ChatGptUI):
         if not valid:
             return False, message
 
+        remove_html_tags(obj["誤答候補"])
+
         for key in japanese_keys:
             if key == "参考情報" and obj.get(key).strip() == "":
                 continue
@@ -59,6 +66,11 @@ class Alpaca(ChatGptUI):
         if "グラフ情報" not in obj:
             return False, "Missing 'グラフ情報' key in the object"
 
+        valid, message = is_valid_graph_info(obj["グラフ情報"], allow_empty_data=True)
+        if not valid:
+            return False, f"Invalid graph information: {message}"
+
+        return True, ""
         valid, message = is_valid_graph_info(obj["グラフ情報"], allow_empty_data=True)
         if not valid:
             return False, f"Invalid graph information: {message}"

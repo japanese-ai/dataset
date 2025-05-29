@@ -31,7 +31,7 @@ class Answer(ChatGptUI):
 
         return f'"""\n{content}\n"""\nこのデータセット({batch_str}){num_rows}件を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報を必ず日本語に翻訳し、必ずHTMLと絵文字を含むCoT形式の回答を生成してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。{no_str}\n※答えにCoT形式をもっと詳しく入れてほしい\n※答えにもっと絵文字を入れてほしい'
 
-    def is_valid_format(self, obj):
+    def is_valid_format(self, content, obj):
         required_keys = {"質問", "参考情報", "答え"}
 
         if not isinstance(obj, dict):

@@ -21,7 +21,7 @@ class PlausibleAnswer(ChatGptUI):
 
         return f'"""\n{content}\n"""\nこのデータセット({batch_str}){num_rows}を、指定されたプロンプトに従って変換してください。具体的には、質問と参考情報と誤答候補を日本語に翻訳し、HTMLと絵文字を含むCoT形式の回答を生成してください。誤答候補は必ず含めて出力してください。出力はJSONL形式でお願いします。出力は各データが1行として全て{num_rows}件とも表示されるようにしてください。{no_str}\n※誤答候補は配列で出力しちゃダメ\n※答えにCoT形式をもっと詳しく入れて欲しい\n※答えにもっと絵文字を入れて欲しい'
 
-    def is_valid_format(self, obj):
+    def is_valid_format(self, content, obj):
         required_keys = {"質問", "参考情報", "誤答候補", "答え"}
         japanese_keys = {"質問", "参考情報", "答え"}
 

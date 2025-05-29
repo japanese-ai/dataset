@@ -24,6 +24,10 @@ def has_html_tags(text):
     return bool(re.search(r"<[^>]+>", text))
 
 
+def remove_html_tags(text):
+    return re.sub(r"<[^>]+>", "", text)
+
+
 def has_japanese(text):
     # Match Japanese characters
     japanese_pattern = re.compile(
@@ -33,8 +37,13 @@ def has_japanese(text):
     # Match a number followed by % (e.g., 2.5%, 100%, 0%)
     percentage_pattern = re.compile(r"\b\d+(\.\d+)?%")
 
+    # Match Python-style list: e.g., x = [1, 2, 3]
+    list_pattern = re.compile(r"\w+\s*=\s*\[\s*\d+(?:\s*,\s*\d+)*\s*\]")
+
     return bool(
-        re.search(japanese_pattern, text) or re.search(percentage_pattern, text)
+        re.search(japanese_pattern, text)
+        or re.search(percentage_pattern, text)
+        or re.search(list_pattern, text)
     )
 
 

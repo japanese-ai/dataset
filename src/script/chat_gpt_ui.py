@@ -82,17 +82,17 @@ class ChatGptUI(ABC):
         return data
 
     @abstractmethod
-    def is_valid_format(self, obj):
+    def is_valid_format(self, content, obj):
         pass
 
-    def is_jsonl(self, lines):
+    def is_jsonl(self, content, lines):
         for i, line in enumerate(lines, 1):
             line = line.strip()
             if not line:
                 continue
             try:
                 obj = json.loads(line)
-                valid, message = self.is_valid_format(obj)
+                valid, message = self.is_valid_format(content, obj)
                 if not valid:
                     return False, f"Line {i}: {message}"
             except json.JSONDecodeError as e:
@@ -169,7 +169,7 @@ class ChatGptUI(ABC):
         is_appended = True
         line_break = "\n" * len(content)
         if num_rows == len(content):
-            valid, message = self.is_jsonl(lines)
+            valid, message = self.is_jsonl(content, lines)
             if not valid:
                 clipboard_data = f"Error: {batch_str} - {message}{line_break}"
                 is_appended = False
@@ -266,7 +266,7 @@ class ChatGptUI(ABC):
             is_first = False
 
             count += 1
-            if count > 15:
+            if count > 30:
                 count = 0
                 time.sleep(300)
 
@@ -279,7 +279,12 @@ class ChatGptUI(ABC):
         error_count = 0
 
         with open(self.input_file, "r", encoding="utf-8") as file:
-            data_list = json.load(file)
+            if self.input_file.endswith(".json"):
+                data_list = json.load(file)
+            elif self.input_file.endswith(".jsonl"):
+                data_list = [json.loads(line) for line in file]
+            else:
+                raise ValueError("Unsupported file format. Use .json or .jsonl")
 
         error_data_list = []
         with open(self.destination_file, "r", encoding="utf-8") as f:
