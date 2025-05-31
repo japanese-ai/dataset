@@ -136,7 +136,7 @@ class ChatGptUI(ABC):
             ]
             clipboard_data = "\n".join(clipboard_data)
             clipboard_data += "\n"
-        except Exception:
+        except Exception as e:
             return False, 0, None, None
 
         if any(item in clipboard_data for item in self.example_data):
