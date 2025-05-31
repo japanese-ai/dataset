@@ -218,7 +218,7 @@ class ChatGptUI(ABC):
         )
 
         if num_rows == check_rows:
-            valid, message = self.is_jsonl(lines)
+            valid, message = self.is_jsonl(None, lines)
         else:
             valid = False
             message = f"Only have {num_rows} rows"
