@@ -29,6 +29,8 @@ class ChatGptUI(ABC):
         self.get_data_y_cors = []
         self.example_data = []
         self.current_start_no = 0
+        self.max_in_chat = 15
+        self.max_error_count = 5
 
     def copy(self, batch_str, y_cor):
         pyperclip.copy(f"Error: {batch_str}")
@@ -266,11 +268,11 @@ class ChatGptUI(ABC):
             is_first = False
 
             count += 1
-            if count > 30:
+            if count > self.max_in_chat:
                 count = 0
                 time.sleep(300)
 
-            if error_count >= 5:
+            if error_count >= self.max_error_count:
                 break
 
     def get_error_data(self, start_from_new_chat=True):
@@ -319,11 +321,11 @@ class ChatGptUI(ABC):
             is_first = False
 
             count += 1
-            if count > 15:
+            if count > self.max_in_chat:
                 count = 0
                 time.sleep(300)
 
-            if error_count >= 5:
+            if error_count >= self.max_error_count:
                 break
 
     def add_no_to_output(self):
@@ -437,11 +439,11 @@ class ChatGptUI(ABC):
             is_first = False
 
             count += 1
-            if count > 15:
+            if count > self.max_in_chat:
                 count = 0
                 time.sleep(300)
 
-            if error_count >= 5:
+            if error_count >= self.max_error_count:
                 break
 
     def merge_fixed_data(self, fixed_file):

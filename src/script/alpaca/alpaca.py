@@ -1,10 +1,5 @@
 from script.chat_gpt_ui import ChatGptUI
-from script.util import (
-    has_japanese,
-    is_valid_answer,
-    is_valid_graph_info,
-    remove_html_tags,
-)
+from script.util import is_valid_answer, is_valid_graph_info, remove_html_tags
 
 
 class Alpaca(ChatGptUI):
@@ -56,21 +51,16 @@ class Alpaca(ChatGptUI):
 
         remove_html_tags(obj["誤答候補"])
 
-        for key in japanese_keys:
-            if key == "参考情報" and obj.get(key).strip() == "":
-                continue
+        # for key in japanese_keys:
+        #     if key == "参考情報" and obj.get(key).strip() == "":
+        #         continue
 
-            if not has_japanese(obj.get(key)):
-                return False, f"{key} does not contain Japanese characters"
+        #     if not has_japanese(obj.get(key)):
+        #         return False, f"{key} does not contain Japanese characters"
 
         if "グラフ情報" not in obj:
             return False, "Missing 'グラフ情報' key in the object"
 
-        valid, message = is_valid_graph_info(obj["グラフ情報"], allow_empty_data=True)
-        if not valid:
-            return False, f"Invalid graph information: {message}"
-
-        return True, ""
         valid, message = is_valid_graph_info(obj["グラフ情報"], allow_empty_data=True)
         if not valid:
             return False, f"Invalid graph information: {message}"
